@@ -27,13 +27,14 @@ export default class App extends Component {
         errorMessage: 'Permission to access location was denied'
       });
     }
-
-    Location.getCurrentPositionAsync({}).then(location => {
-      this.setState({
-        location,
-        loading: false
-      });
-    });
+    Location.watchPositionAsync({}, newLocation => {
+      if(this.state.location !== newLocation) {
+        this.setState({
+              location: newLocation,
+              loading: false
+            });
+      }
+    })
   };
 
   render() {
