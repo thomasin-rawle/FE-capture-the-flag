@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { Platform, Text, View, StyleSheet } from 'react-native';
+import { Platform, Text, View, StyleSheet, Dimensions, Button } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 
 export default class App extends Component {
   state = {
     errorMessage: null,
-    location: {},
-    loading: true
+    loading: true,
+    lat: 0,
+    long: 0,
   };
 
   componentWillMount() {
@@ -27,10 +28,13 @@ export default class App extends Component {
         errorMessage: 'Permission to access location was denied'
       });
     }
-    Location.watchPositionAsync({}, newLocation => {
-      if(this.state.location !== newLocation) {
+    Location.watchPositionAsync({distanceInterval: 5}, newLocation => {
+      if(this.state.lat !== newLocation.coords.latitude) {
+        console.log(this.state.lat, '<< state')
+        console.log(newLocation.coords.latitude, '<< new location')
         this.setState({
-              location: newLocation,
+              lat: newLocation.coords.latitude,
+              long: newLocation.coords.longitude,
               loading: false
             });
       }
@@ -45,30 +49,49 @@ export default class App extends Component {
         </View>
       );
     else {
+      const screen = Dimensions.get('window')
+      const ASPECT_RATIO = screen.width / screen.height
+      const latitudeDelta = 0.005
+      const {lat, long} = this.state
+      const initialRegion = {
+        latitudeDelta,
+        longitudeDelta: latitudeDelta * ASPECT_RATIO,
+        latitude: lat, longitude: long
+      }
+      console.log(this.state)
       return (
-        <MapView
-          style={{ flex: 1 }}
-          initialRegion={{
-            latitudeDelta: 1,
-            longitudeDelta: 1,
-            ...this.state.location.coords
-          }}
-          title={'capture flag'}
-          showsUserLocation={true}
-          loadingEnabled={true}
-        >
-          {this.state.location.coords && (
-            <MapView.Marker
-              coordinate={{
-                latitude: this.state.location.coords.latitude,
-                longitude: this.state.location.coords.longitude
-              }}
-              title={'Your Location'}
-            />
-          )}
-        </MapView>
+        <View style={{ flex: 1 }}>
+          <MapView
+            ref={map => {this.map = map}}
+            style={{ flex: 1 }}
+            region={initialRegion}
+            title={'capture flag'}
+            showsUserLocation={true}
+            followUserLocation={true}
+          >
+            {/* {this.state.location.coords && (
+              <MapView.Marker
+                coordinate={{
+                  latitude: this.state.location.coords.latitude,
+                  longitude: this.state.location.coords.longitude
+                }}
+                title={'Your Location'}
+              />
+            )} */}
+          </MapView>
+          <View style={styles.buttonContainer}>
+            <Button style={styles.button} onPress={() => this.handleRecenter} title="Re-center"></Button>
+          </View>
+          </View>
       );
     }
+  }
+  handleRecenter = () => {
+      const {lat, long} = this.state;
+      this.map.animateToRegion({
+        lat,
+        long,
+      })
   }
 }
 
@@ -84,5 +107,15 @@ const styles = StyleSheet.create({
     margin: 24,
     fontSize: 18,
     textAlign: 'center'
+  },
+  button: {
+    color:'blue',
+    padding: 20,
+    borderRadius: 100
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 40,
+    right:20,
   }
 });
