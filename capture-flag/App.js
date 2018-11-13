@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Platform, Text, View, StyleSheet, Dimensions, Button } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
+import orange from "./assets/orange.png";
+import randomLocation from 'random-location'
 
 export default class App extends Component {
   state = {
@@ -9,7 +11,7 @@ export default class App extends Component {
     lat: 0,
     long: 0,
   };
-
+ 
   componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
       this.setState({
@@ -78,6 +80,35 @@ export default class App extends Component {
                 title={'Your Location'}
               />
             )} */}
+          <MapView.Marker
+              coordinate={{
+                latitude: 53.4858,
+                longitude: -2.2421
+              }}
+              title={'museum Location'}
+            image={orange}
+            />
+          <MapView.Marker
+            coordinate={{
+              latitude: randomLocation.randomCirclePoint(this.state.location.coords, 500).latitude,
+              longitude: randomLocation.randomCirclePoint(this.state.location.coords, 500).longitude
+            }}
+            title={'randomLocation1'}
+          />
+          <MapView.Marker
+            coordinate={{
+              latitude: randomLocation.randomCirclePoint(this.state.location.coords, 500).latitude,
+              longitude: randomLocation.randomCirclePoint(this.state.location.coords, 500).longitude
+            }}
+            title={'randomLocation2'}
+          />
+          <MapView.Marker
+            coordinate={{
+              latitude: randomLocation.randomCirclePoint(this.state.location.coords, 500).latitude,
+              longitude: randomLocation.randomCirclePoint(this.state.location.coords, 500).longitude
+            }}
+            title={'randomLocation3'}
+          />
           </MapView>
           <View style={styles.buttonContainer}>
             <Button style={styles.button} onPress={() => this.handleRecenter} title="Re-center"></Button>
