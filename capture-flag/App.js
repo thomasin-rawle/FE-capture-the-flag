@@ -1,8 +1,10 @@
+<script src="http://localhost:8097"></script>
 import React, { Component } from 'react';
-import { Platform, Text, View, StyleSheet, Dimensions, Button } from 'react-native';
+import { Platform, Text, View, StyleSheet, Dimensions, Button, Alert} from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import orange from "./assets/orange.png";
-import randomLocation from 'random-location'
+import randomLocation from 'random-location';
+
 
 export default class App extends Component {
   state = {
@@ -10,6 +12,9 @@ export default class App extends Component {
     loading: true,
     lat: 0,
     long: 0,
+    random: true,
+    flagCaptured: false,
+    modalVisible: false
   };
  
   componentWillMount() {
@@ -43,6 +48,20 @@ export default class App extends Component {
     })
   };
 
+  captureFlag = () => {
+    if (this.state.random) {
+      Alert.alert(
+        'Alert Title',
+        'My Alert Msg',
+        [
+          {text: 'Capture the flag', onPress: () => console.log('Flag Captured')},
+          {text: 'Leave the flag', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        ],
+        { cancelable: false }
+      )
+    }
+  }
+
   render() {
     if (this.state.loading)
       return (
@@ -60,13 +79,13 @@ export default class App extends Component {
         longitudeDelta: latitudeDelta * ASPECT_RATIO,
         latitude: lat, longitude: long
       }
-      console.log(this.state)
+      // console.log(this.state)
       return (
         <View style={{ flex: 1 }}>
           <MapView
             ref={map => {this.map = map}}
             style={{ flex: 1 }}
-            region={initialRegion}
+            initialRegion={initialRegion}
             title={'capture flag'}
             showsUserLocation={true}
             followUserLocation={true}
@@ -80,50 +99,32 @@ export default class App extends Component {
                 title={'Your Location'}
               />
             )} */}
-          <MapView.Marker
-              coordinate={{
-                latitude: 53.4858,
-                longitude: -2.2421
-              }}
-              title={'museum Location'}
-            image={orange}
-            />
-          <MapView.Marker
-            coordinate={{
-              latitude: randomLocation.randomCirclePoint({latitude:this.state.lat,longitude:this.state.long}, 500).latitude,
-                longitude: randomLocation.randomCirclePoint({latitude: this.state.lat, longitude: this.state.long }, 500).longitude
-            }}
-            title={'randomLocation1'}
-          />
-          <MapView.Marker
+          <MapView.Marker image={require('./assets/red-flag.png')} onPress={this.captureFlag}
             coordinate={{
                 latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
                 longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
             }}
-            title={'randomLocation2'}
-          />
-          <MapView.Marker
-            coordinate={{
-                latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
-                longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
-            }}
-            title={'randomLocation3'}
+            // title={'Capture Flag'}
           />
           </MapView>
-          <View style={styles.buttonContainer}>
+         
+          {/* <View style={styles.buttonContainer}>
             <Button style={styles.button} onPress={() => this.handleRecenter} title="Re-center"></Button>
-          </View>
+          </View> */}
           </View>
       );
     }
   }
-  handleRecenter = () => {
-      const {lat, long} = this.state;
-      this.map.animateToRegion({
-        lat,
-        long,
-      })
-  }
+  // handleRecenter = () => {
+  //     // const {lat, long} = this.state;
+  //     // this.map.animateToRegion({
+  //     //   lat,
+  //     //   long,
+  //     // })
+  //     this.setState({
+
+  //     })
+  // }
 }
 
 const styles = StyleSheet.create({
@@ -140,7 +141,8 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   button: {
-    color:'blue',
+    backgroundColor:'blue',
+    color: 'white',
     padding: 20,
     borderRadius: 100
   },
@@ -148,5 +150,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 40,
     right:20,
-  }
+  },
+
 });
