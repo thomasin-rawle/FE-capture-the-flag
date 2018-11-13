@@ -90,22 +90,22 @@ export default class App extends Component {
             />
           <MapView.Marker
             coordinate={{
-              latitude: randomLocation.randomCirclePoint(this.state.location.coords, 500).latitude,
-              longitude: randomLocation.randomCirclePoint(this.state.location.coords, 500).longitude
+              latitude: randomLocation.randomCirclePoint({latitude:this.state.lat,longitude:this.state.long}, 500).latitude,
+                longitude: randomLocation.randomCirclePoint({latitude: this.state.lat, longitude: this.state.long }, 500).longitude
             }}
             title={'randomLocation1'}
           />
           <MapView.Marker
             coordinate={{
-              latitude: randomLocation.randomCirclePoint(this.state.location.coords, 500).latitude,
-              longitude: randomLocation.randomCirclePoint(this.state.location.coords, 500).longitude
+                latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
+                longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
             }}
             title={'randomLocation2'}
           />
           <MapView.Marker
             coordinate={{
-              latitude: randomLocation.randomCirclePoint(this.state.location.coords, 500).latitude,
-              longitude: randomLocation.randomCirclePoint(this.state.location.coords, 500).longitude
+                latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
+                longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
             }}
             title={'randomLocation3'}
           />
