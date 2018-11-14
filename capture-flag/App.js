@@ -4,6 +4,7 @@ import redFlag from './assets/red-flag.png';
 import { Platform, Text, View, StyleSheet, Dimensions, Button, Alert, Image } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import randomLocation from 'random-location';
+import geolib from 'geolib';
 
 export default class App extends Component {
 	state = {
@@ -11,9 +12,8 @@ export default class App extends Component {
 		loading: true,
 		lat: 0,
 		long: 0,
-		random: true,
+		nearFlag: false,
 		flagCaptured: false,
-		modalVisible: false,
 		score: 0
 	};
 	componentWillMount() {
@@ -42,12 +42,13 @@ export default class App extends Component {
 					long: newLocation.coords.longitude,
 					loading: false
 				});
+				this.amINear();
 			}
 		});
 	};
 
 	captureFlag = () => {
-		if (this.state.random) {
+		if (this.state.nearFlag) {
 			Alert.alert('Alert Title', 'My Alert Msg', [{ text: 'Capture the flag', onPress: () => this.incrementScore() }, { text: 'Leave the flag', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }], { cancelable: false });
 		}
 	};
@@ -57,7 +58,18 @@ export default class App extends Component {
 			score: this.state.score + 5
 		});
 	};
+	amINear = () => {
+		const near = geolib.isPointInCircle(
+			{ latitude: this.state.lat, longitude: this.state.long },
+			{ latitude: 53.4858, longitude: -2.2421 }, //need to fetch from BE
+			150
+		); // distance is 130 meters
+		console.log(near, 'nearrrrr');
 
+		this.setState({
+			nearFlag: near
+		});
+	};
 	render() {
 		if (this.state.loading)
 			return (
@@ -76,7 +88,7 @@ export default class App extends Component {
 				latitude: lat,
 				longitude: long
 			};
-			const flag = this.state.random ? greenFlag : redFlag;
+			const flag = this.state.nearFlag ? greenFlag : redFlag;
 			return (
 				<View style={{ flex: 1 }}>
 					<View style={styles.topBar}>
@@ -101,15 +113,16 @@ export default class App extends Component {
 						followUserLocation={true}
 					>
 						{/* {this.state.location.coords && (
-              <MapView.Marker
-                coordinate={{
-                  latitude: this.state.location.coords.latitude,
-                  longitude: this.state.location.coords.longitude
-                }}
-                title={'Your Location'}
-              />
-            )} */}
-						<MapView.Marker
+							<MapView.Marker
+								coordinate={{
+									latitude: this.state.location.coords.latitude,
+									longitude: this.state.location.coords.longitude
+								}}
+								title={'Your Location'}
+							/>
+						)} */}
+
+						{/* <MapView.Marker
 							image={flag}
 							onPress={this.captureFlag}
 							coordinate={{
@@ -117,6 +130,15 @@ export default class App extends Component {
 								longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
 							}}
 							// title={'Capture Flag'}
+						/> */}
+						<MapView.Marker
+							image={flag}
+							onPress={this.captureFlag}
+							coordinate={{
+								latitude: 53.4858,
+								longitude: -2.2421
+							}}
+							title={'Football Museum'}
 						/>
 					</MapView>
 
