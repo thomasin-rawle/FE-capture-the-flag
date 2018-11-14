@@ -1,10 +1,20 @@
-<script src="http://localhost:8097"></script>
-import React, { Component } from 'react';
-import { Platform, Text, View, StyleSheet, Dimensions, Button, Alert} from 'react-native';
-import { Constants, Location, Permissions, MapView } from 'expo';
+<script src="http://localhost:8097" />;
+import React, { Component } from "react";
+import redFlag from "./assets/red-flag.png";
+import greenFlag from "./assets/green-flag.png";
+import {
+  Platform,
+  Text,
+  View,
+  StyleSheet,
+  Dimensions,
+  Button,
+  Alert
+} from "react-native";
+import { Constants, Location, Permissions, MapView } from "expo";
 import orange from "./assets/orange.png";
-import randomLocation from 'random-location';
-
+import randomLocation from "random-location";
+import geolib from "geolib";
 
 export default class App extends Component {
   state = {
@@ -12,16 +22,16 @@ export default class App extends Component {
     loading: true,
     lat: 0,
     long: 0,
-    random: true,
+    nearFlag: false,
     flagCaptured: false,
     modalVisible: false
   };
- 
+
   componentWillMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
+    if (Platform.OS === "android" && !Constants.isDevice) {
       this.setState({
         errorMessage:
-          'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
+          "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
       });
     } else {
       this._getLocationAsync();
@@ -30,63 +40,89 @@ export default class App extends Component {
 
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
+    if (status !== "granted") {
       this.setState({
-        errorMessage: 'Permission to access location was denied'
+        errorMessage: "Permission to access location was denied"
       });
     }
-    Location.watchPositionAsync({distanceInterval: 5}, newLocation => {
-      if(this.state.lat !== newLocation.coords.latitude) {
-        console.log(this.state.lat, '<< state')
-        console.log(newLocation.coords.latitude, '<< new location')
+    Location.watchPositionAsync({ distanceInterval: 5 }, newLocation => {
+      if (this.state.lat !== newLocation.coords.latitude) {
+        console.log(this.state.lat, "<< state");
+        console.log(newLocation.coords.latitude, "<< new location");
         this.setState({
-              lat: newLocation.coords.latitude,
-              long: newLocation.coords.longitude,
-              loading: false
-            });
+          lat: newLocation.coords.latitude,
+          long: newLocation.coords.longitude,
+          loading: false
+        });
+        this.amINear(); 
       }
-    })
+    });
   };
 
   captureFlag = () => {
-    if (this.state.random) {
+    if (this.state.nearFlag) {
       Alert.alert(
-        'Alert Title',
-        'My Alert Msg',
+        "Alert Title",
+        "My Alert Msg",
         [
-          {text: 'Capture the flag', onPress: () => console.log('Flag Captured')},
-          {text: 'Leave the flag', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {
+            text: "Capture the flag",
+            onPress: () => console.log("Flag Captured")
+          },
+          {
+            text: "Leave the flag",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          }
         ],
         { cancelable: false }
-      )
+      );
     }
-  }
+  };
 
+  amINear = () => {
+    const near = geolib.isPointInCircle(
+      { latitude: this.state.lat, longitude: this.state.long },
+      { latitude: 53.4858, longitude: -2.2421 }, //need to fetch from BE
+      150
+    ); // distance is 130 meters
+    console.log(near,"nearrrrr");
+    if (near) {
+      this.setState({
+        nearFlag: true
+      });
+    }
+  };
+  // checks if 51.525, 7.4575 is within a radius of 5km from 51.5175, 7.4678 //false
   render() {
-    if (this.state.loading)
+    if (this.state.loading) {
       return (
         <View style={styles.loading}>
           <Text>Loading...</Text>
         </View>
       );
-    else {
-      const screen = Dimensions.get('window')
-      const ASPECT_RATIO = screen.width / screen.height
-      const latitudeDelta = 0.005
-      const {lat, long} = this.state
+    } else {
+      const screen = Dimensions.get("window");
+      const ASPECT_RATIO = screen.width / screen.height;
+      const latitudeDelta = 0.005;
+      const { lat, long } = this.state;
       const initialRegion = {
         latitudeDelta,
         longitudeDelta: latitudeDelta * ASPECT_RATIO,
-        latitude: lat, longitude: long
-      }
+        latitude: lat,
+        longitude: long
+      };
+      const flag = this.state.nearFlag?greenFlag:redFlag;
       // console.log(this.state)
       return (
         <View style={{ flex: 1 }}>
           <MapView
-            ref={map => {this.map = map}}
+            ref={map => {
+              this.map = map;
+            }}
             style={{ flex: 1 }}
             initialRegion={initialRegion}
-            title={'capture flag'}
+            title={"capture flag"}
             showsUserLocation={true}
             followUserLocation={true}
           >
@@ -99,19 +135,27 @@ export default class App extends Component {
                 title={'Your Location'}
               />
             )} */}
-          <MapView.Marker image={this.state.random ? require('./assets/green-flag.png') : require('./assets/red-flag.png')} onPress={this.captureFlag}
-            coordinate={{
+            {/* <MapView.Marker image={flag} onPress={this.captureFlag}
+              coordinate={{
                 latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
                 longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
-            }}
+              }}
             // title={'Capture Flag'}
-          />
+            /> */}
+            <MapView.Marker
+              image={flag}
+              onPress={this.captureFlag}
+              coordinate={{
+                latitude: 53.4858,
+                longitude: -2.2421
+              }}
+              title={"Football Museum"}
+            />
           </MapView>
-         
           {/* <View style={styles.buttonContainer}>
             <Button style={styles.button} onPress={() => this.handleRecenter} title="Re-center"></Button>
           </View> */}
-          </View>
+        </View>
       );
     }
   }
@@ -130,26 +174,25 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   loading: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#ecf0f1'
+    backgroundColor: "#ecf0f1"
   },
   paragraph: {
     margin: 24,
     fontSize: 18,
-    textAlign: 'center'
+    textAlign: "center"
   },
   button: {
-    backgroundColor:'blue',
-    color: 'white',
+    backgroundColor: "blue",
+    color: "white",
     padding: 20,
     borderRadius: 100
   },
   buttonContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 40,
-    right:20,
-  },
-
+    right: 20
+  }
 });
