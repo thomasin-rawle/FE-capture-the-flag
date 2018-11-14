@@ -99,7 +99,7 @@ export default class App extends Component {
                 title={'Your Location'}
               />
             )} */}
-          <MapView.Marker image={require('./assets/red-flag.png')} onPress={this.captureFlag}
+          <MapView.Marker image={this.state.random ? require('./assets/green-flag.png') : require('./assets/red-flag.png')} onPress={this.captureFlag}
             coordinate={{
                 latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
                 longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
