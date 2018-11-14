@@ -1,6 +1,6 @@
 <script src="http://localhost:8097" />;
 import React, { Component } from 'react';
-import { Platform, Text, View, StyleSheet, Dimensions, Button, Alert } from 'react-native';
+import { Platform, Text, View, StyleSheet, Dimensions, Button, Alert, Image } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import orange from './assets/orange.png';
 import randomLocation from 'random-location';
@@ -13,9 +13,9 @@ export default class App extends Component {
 		long: 0,
 		random: true,
 		flagCaptured: false,
-		modalVisible: false
+		modalVisible: false,
+		score: 0
 	};
-
 	componentWillMount() {
 		if (Platform.OS === 'android' && !Constants.isDevice) {
 			this.setState({
@@ -48,8 +48,14 @@ export default class App extends Component {
 
 	captureFlag = () => {
 		if (this.state.random) {
-			Alert.alert('Alert Title', 'My Alert Msg', [{ text: 'Capture the flag', onPress: () => console.log('Flag Captured') }, { text: 'Leave the flag', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }], { cancelable: false });
+			Alert.alert('Alert Title', 'My Alert Msg', [{ text: 'Capture the flag', onPress: () => this.incrementScore() }, { text: 'Leave the flag', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }], { cancelable: false });
 		}
+	};
+
+	incrementScore = () => {
+		this.setState({
+			score: this.state.score + 5
+		});
 	};
 
 	render() {
@@ -70,9 +76,21 @@ export default class App extends Component {
 				latitude: lat,
 				longitude: long
 			};
+			const flag = this.state.random ? require('./assets/green-flag.png') : require('./assets/red-flag.png');
 			// console.log(this.state)
 			return (
 				<View style={{ flex: 1 }}>
+					<View style={styles.topBar}>
+						<View style={styles.user}>
+							<Text>User</Text>
+						</View>
+						<Image source={require('./assets/icon.png')} style={{ height: 25, width: 25 }} />
+						{/* <View style={styles.logo}>
+						</View> */}
+						<View style={styles.score}>
+							<Text>Score: {this.state.score}</Text>
+						</View>
+					</View>
 					<MapView
 						ref={map => {
 							this.map = map;
@@ -93,7 +111,7 @@ export default class App extends Component {
               />
             )} */}
 						<MapView.Marker
-							image={this.state.random ? require('./assets/green-flag.png') : require('./assets/red-flag.png')}
+							image={flag}
 							onPress={this.captureFlag}
 							coordinate={{
 								latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
@@ -102,9 +120,7 @@ export default class App extends Component {
 							// title={'Capture Flag'}
 						/>
 					</MapView>
-					<View style={styles.scoreContainer}>
-						<Text>Score: 000</Text>
-					</View>
+
 					{/* <View style={styles.buttonContainer}>
             <Button style={styles.button} onPress={() => this.handleRecenter} title="Re-center"></Button>
           </View> */}
@@ -148,19 +164,25 @@ const styles = StyleSheet.create({
 		bottom: 40,
 		right: 20
 	},
-	scoreContainer: {
-		position: 'absolute',
-		top: 40,
-		right: 20,
-		width: 100,
-		height: 50,
-		padding: 10,
-		borderRadius: 30,
-		backgroundColor: 'white',
-		justifyContent: 'center',
-		alignItems: 'center'
+	topBar: {
+		display: 'flex',
+		height: 70,
+		backgroundColor: 'green',
+		justifyContent: 'space-between',
+		alignItems: 'flex-end',
+		flexDirection: 'row',
+		paddingVertical: 10
+	},
+	user: {
+		color: 'black',
+		width: 70,
+		paddingLeft: 20
+	},
+	logo: {
+		width: 70
 	},
 	score: {
-		color: 'black'
+		color: 'black',
+		width: 70
 	}
 });
