@@ -1,8 +1,8 @@
-<script src="http://localhost:8097" />;
 import React, { Component } from 'react';
+import greenFlag from './assets/green-flag.png';
+import redFlag from './assets/red-flag.png';
 import { Platform, Text, View, StyleSheet, Dimensions, Button, Alert, Image } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
-import orange from './assets/orange.png';
 import randomLocation from 'random-location';
 
 export default class App extends Component {
@@ -76,8 +76,7 @@ export default class App extends Component {
 				latitude: lat,
 				longitude: long
 			};
-			const flag = this.state.random ? require('./assets/green-flag.png') : require('./assets/red-flag.png');
-			// console.log(this.state)
+			const flag = this.state.random ? greenFlag : redFlag;
 			return (
 				<View style={{ flex: 1 }}>
 					<View style={styles.topBar}>
