@@ -84,9 +84,9 @@ export default class App extends Component {
 						<View style={styles.user}>
 							<Text>User</Text>
 						</View>
-						<Image source={require('./assets/icon.png')} style={{ height: 25, width: 25 }} />
-						{/* <View style={styles.logo}>
-						</View> */}
+						<View style={styles.logo}>
+							<Image source={require('./assets/icon.png')} style={{ height: 25, width: 25 }} />
+						</View>
 						<View style={styles.score}>
 							<Text>Score: {this.state.score}</Text>
 						</View>
@@ -168,21 +168,26 @@ const styles = StyleSheet.create({
 		display: 'flex',
 		height: 70,
 		backgroundColor: 'green',
-		justifyContent: 'space-between',
+		justifyContent: 'center',
 		alignItems: 'flex-end',
 		flexDirection: 'row',
 		paddingVertical: 10
 	},
 	user: {
 		color: 'black',
-		width: 70,
-		paddingLeft: 20
+		flex: 1,
+		alignItems: 'center',
+		flexGrow: 1
 	},
 	logo: {
-		width: 70
+		flex: 1,
+		alignItems: 'center',
+		flexGrow: 2
 	},
 	score: {
 		color: 'black',
-		width: 70
+		flex: 1,
+		alignItems: 'center',
+		flexGrow: 1
 	}
 });
