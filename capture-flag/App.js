@@ -5,6 +5,7 @@ import { Platform, Text, View, StyleSheet, Dimensions, Button, Alert, Image } fr
 import { Constants, Location, Permissions, MapView } from 'expo';
 import randomLocation from 'random-location';
 import geolib from 'geolib';
+import * as api from './api';
 
 export default class App extends Component {
 	state = {
@@ -14,6 +15,9 @@ export default class App extends Component {
 		long: 0,
 		nearFlag: false,
 		flagCaptured: false,
+		flagGenerated: false,
+		flagLat: 0,
+		flagLong: 0,
 		score: 0
 	};
 	componentWillMount() {
@@ -23,6 +27,20 @@ export default class App extends Component {
 			});
 		} else {
 			this._getLocationAsync();
+
+			api.getUser('Jacobgodslayer').then(user =>
+				this.setState({
+					score: user.score,
+					flagCaptured: user.flagCaptured,
+					flagGenerated: user.flagGenerated,
+					flagLat: user.latitude,
+					flatLong: user.longitude,
+					username: user.username
+				})
+			);
+			if (!this.state.flagGenerated) {
+				this.generateFlag();
+			}
 		}
 	}
 
@@ -46,16 +64,48 @@ export default class App extends Component {
 			}
 		});
 	};
+	generateFlag = () => {
+		const flagCoordinate = {
+			latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
+			longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
+		};
+		// console.log('lat', this.state.flagLat, 'long', this.state.flagLong);
+		console.log(flagCoordinate);
+		this.setState({
+			flagLat: flagCoordinate.latitude,
+			flagLong: flagCoordinate.longitude,
+			flagGenerated: true
+		});
+	};
 
 	captureFlag = () => {
 		if (this.state.nearFlag) {
-			Alert.alert('Alert Title', 'My Alert Msg', [{ text: 'Capture the flag', onPress: () => this.incrementScore() }, { text: 'Leave the flag', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }], { cancelable: false });
+			Alert.alert(
+				'Alert Title',
+				'My Alert Msg',
+				[
+					{
+						text: 'Capture the flag',
+						onPress: () => {
+							this.incrementScore();
+							api.patchFlagCapture(this.state.username, this.state.flagLong, this.state.flagLat);
+							this.setState({
+								flagCaptured: true
+							});
+						}
+					},
+					{ text: 'Leave the flag', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }
+				],
+				{ cancelable: false }
+			);
 		}
 	};
 
 	incrementScore = () => {
+		const scoreUpdate = this.state.score + 5;
+		api.patchScore(this.state.username, scoreUpdate);
 		this.setState({
-			score: this.state.score + 5
+			score: scoreUpdate
 		});
 	};
 	amINear = () => {
@@ -63,13 +113,12 @@ export default class App extends Component {
 			{ latitude: this.state.lat, longitude: this.state.long },
 			{ latitude: 53.4858, longitude: -2.2421 }, //need to fetch from BE
 			150
-		); // distance is 130 meters
-		console.log(near, 'nearrrrr');
-
+		);
 		this.setState({
 			nearFlag: near
 		});
 	};
+
 	render() {
 		if (this.state.loading)
 			return (
@@ -126,10 +175,10 @@ export default class App extends Component {
 							image={flag}
 							onPress={this.captureFlag}
 							coordinate={{
-								latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
-								longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
+								latitude: this.state.flagLat,
+								longitude: this.state.flagLong
 							}}
-							// title={'Capture Flag'}
+							title={'Capture Flag'}
 						/> */}
 						<MapView.Marker
 							image={flag}
@@ -141,24 +190,10 @@ export default class App extends Component {
 							title={'Football Museum'}
 						/>
 					</MapView>
-
-					{/* <View style={styles.buttonContainer}>
-            <Button style={styles.button} onPress={() => this.handleRecenter} title="Re-center"></Button>
-          </View> */}
 				</View>
 			);
 		}
 	}
-	// handleRecenter = () => {
-	//     // const {lat, long} = this.state;
-	//     // this.map.animateToRegion({
-	//     //   lat,
-	//     //   long,
-	//     // })
-	//     this.setState({
-
-	//     })
-	// }
 }
 
 const styles = StyleSheet.create({
