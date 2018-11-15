@@ -29,18 +29,18 @@ export default class App extends Component {
 			this._getLocationAsync();
 
 			api.getUser('Jacobgodslayer').then(user =>
-				this.setState({
-					score: user.score,
-					flagCaptured: user.flagCaptured,
-					flagGenerated: user.flagGenerated,
-					flagLat: user.latitude,
-					flatLong: user.longitude,
-					username: user.username
-				})
+				this.setState(
+					{
+						score: user.score,
+						flagCaptured: user.flagCaptured,
+						flagGenerated: user.flagGenerated,
+						flagLat: user.latitude,
+						flatLong: user.longitude,
+						username: user.username
+					},
+					this.generateFlag()
+				)
 			);
-			if (!this.state.flagGenerated) {
-				this.generateFlag();
-			}
 		}
 	}
 
@@ -69,8 +69,6 @@ export default class App extends Component {
 			latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
 			longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
 		};
-		// console.log('lat', this.state.flagLat, 'long', this.state.flagLong);
-		console.log(flagCoordinate);
 		this.setState({
 			flagLat: flagCoordinate.latitude,
 			flagLong: flagCoordinate.longitude,
@@ -171,16 +169,18 @@ export default class App extends Component {
 							/>
 						)} */}
 
+						{/* {this.state.flagLat && this.state.flagLong && (
+							<MapView.Marker
+								image={flag}
+								onPress={this.captureFlag}
+								coordinate={{
+									latitude: this.state.flagLat,
+									longitude: this.state.flagLong
+								}}
+								title={'Capture Flag'}
+							/>
+						)} */}
 						{/* <MapView.Marker
-							image={flag}
-							onPress={this.captureFlag}
-							coordinate={{
-								latitude: this.state.flagLat,
-								longitude: this.state.flagLong
-							}}
-							title={'Capture Flag'}
-						/> */}
-						<MapView.Marker
 							image={flag}
 							onPress={this.captureFlag}
 							coordinate={{
@@ -188,7 +188,7 @@ export default class App extends Component {
 								longitude: -2.2421
 							}}
 							title={'Football Museum'}
-						/>
+						/> */}
 					</MapView>
 				</View>
 			);
