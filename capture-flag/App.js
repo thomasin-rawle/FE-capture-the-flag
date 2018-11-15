@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import greenFlag from './assets/green-flag.png';
-import redFlag from './assets/red-flag.png';
 import { Platform, Text, View, StyleSheet, Dimensions, Button, Alert, Image } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import randomLocation from 'random-location';
 import geolib from 'geolib';
 import * as api from './api';
+import Flag from './components/Flag'
 
 export default class App extends Component {
 	state = {
@@ -28,19 +27,22 @@ export default class App extends Component {
 		} else {
 			this._getLocationAsync();
 
-			api.getUser('Jacobgodslayer').then(user =>
+			api.getUser('Jacobgodslayer')
+			.then(user =>
 				this.setState(
 					{
 						score: user.score,
 						flagCaptured: user.flagCaptured,
 						flagGenerated: user.flagGenerated,
-						flagLat: user.latitude,
-						flatLong: user.longitude,
+						flagLat: user.flagLatitude,
+						flagLong: user.flagLongitude,
 						username: user.username
 					},
-					this.generateFlag()
+					// ,
+          	// () => {if(!this.state.flagGenerated) 
+				this.generateFlag(user.username)
 				)
-			);
+			)
 		}
 	}
 
@@ -53,8 +55,6 @@ export default class App extends Component {
 		}
 		Location.watchPositionAsync({ distanceInterval: 5 }, newLocation => {
 			if (this.state.lat !== newLocation.coords.latitude) {
-				console.log(this.state.lat, '<< state');
-				console.log(newLocation.coords.latitude, '<< new location');
 				this.setState({
 					lat: newLocation.coords.latitude,
 					long: newLocation.coords.longitude,
@@ -64,16 +64,25 @@ export default class App extends Component {
 			}
 		});
 	};
-	generateFlag = () => {
+	generateFlag = (username) => {
 		const flagCoordinate = {
 			latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
 			longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
-		};
-		this.setState({
-			flagLat: flagCoordinate.latitude,
-			flagLong: flagCoordinate.longitude,
-			flagGenerated: true
-		});
+    };
+		api.patchFlagLocation(username, 53.486092, -2.24008)
+    .then(flagLocation=>{
+        this.setState({
+        	flagLat: flagLocation.flagLatitude,
+          flagLong: flagLocation.flagLongitude,
+        	flagGenerated: true
+        })
+        })
+        this.setState({
+          flagLat: flagCoordinate.latitude,
+          flagLong: flagCoordinate.longitude,
+          flagGenerated: true
+        })
+        // console.log(this.state.flagLat,"FSFSAfafafaf")
 	};
 
 	captureFlag = () => {
@@ -101,10 +110,10 @@ export default class App extends Component {
 
 	incrementScore = () => {
 		const scoreUpdate = this.state.score + 5;
-		api.patchScore(this.state.username, scoreUpdate);
-		this.setState({
+    api.patchScore(this.state.username, scoreUpdate)
+      this.setState({
 			score: scoreUpdate
-		});
+    })	
 	};
 	amINear = () => {
 		const near = geolib.isPointInCircle(
@@ -118,6 +127,7 @@ export default class App extends Component {
 	};
 
 	render() {
+    // console.log(this.state)
 		if (this.state.loading)
 			return (
 				<View style={styles.loading}>
@@ -135,7 +145,6 @@ export default class App extends Component {
 				latitude: lat,
 				longitude: long
 			};
-			const flag = this.state.nearFlag ? greenFlag : redFlag;
 			return (
 				<View style={{ flex: 1 }}>
 					<View style={styles.topBar}>
@@ -180,15 +189,12 @@ export default class App extends Component {
 								title={'Capture Flag'}
 							/>
 						)} */}
-						{/* <MapView.Marker
-							image={flag}
-							onPress={this.captureFlag}
-							coordinate={{
-								latitude: 53.4858,
-								longitude: -2.2421
-							}}
-							title={'Football Museum'}
-						/> */}
+						{/* FLAG COMPONENT */}
+            {/* <Flag captureFlag={this.captureFlag}
+             nearFlag= {this.state.nearFlag}
+              flagLat={this.state.flagLat}
+              flagLong={this.state.flagLong} /> */}
+            
 					</MapView>
 				</View>
 			);
