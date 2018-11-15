@@ -8,8 +8,8 @@ export const getUser = async username => {
 export const patchScore = async (username, scoreUpdate) => {
 	const { data } = await axios.patch(`${BASE_URL}/user/${username}?score=${scoreUpdate}`);
 };
-export const patchFlagLocation = async (username, longUpdate, latUpdate) => {
-	const { data } = await axios.patch(`${BASE_URL}/flag/${username}?longitude=${longUpdate}&latitude=${latUpdate}`);
+export const patchFlagLocation = async (username, latUpdate, longUpdate) => {
+	const { data } = await axios.patch(`${BASE_URL}/flag/${username}?latitude=${latUpdate}&longitude=${longUpdate}`);
 };
 export const patchFlagCapture = async username => {
 	const { data } = await axios.patch(`${BASE_URL}/flag/${username}/capture`);

@@ -28,7 +28,7 @@ export default class App extends Component {
 		} else {
 			this._getLocationAsync();
 
-			api.getUser('Jacobgodslayer').then(user =>
+			api.getUser('NickyBee').then(user =>
 				this.setState(
 					{
 						score: user.score,
@@ -100,10 +100,11 @@ export default class App extends Component {
 	};
 
 	incrementScore = () => {
-		const scoreUpdate = this.state.score + 5;
+		const scoreUpdate = 5;
+		console.log(this.state);
 		api.patchScore(this.state.username, scoreUpdate);
 		this.setState({
-			score: scoreUpdate
+			score: this.state.score + scoreUpdate
 		});
 	};
 	amINear = () => {
@@ -180,7 +181,7 @@ export default class App extends Component {
 								title={'Capture Flag'}
 							/>
 						)} */}
-						{/* <MapView.Marker
+						<MapView.Marker
 							image={flag}
 							onPress={this.captureFlag}
 							coordinate={{
@@ -188,7 +189,7 @@ export default class App extends Component {
 								longitude: -2.2421
 							}}
 							title={'Football Museum'}
-						/> */}
+						/>
 					</MapView>
 				</View>
 			);
