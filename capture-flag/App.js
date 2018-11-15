@@ -28,7 +28,7 @@ export default class App extends Component {
 		} else {
 			this._getLocationAsync();
 
-			api.getUser('Jacobgodslayer').then(user =>
+			api.getUser('NickyBee').then(user =>
 				this.setState(
 					{
 						score: user.score,
@@ -170,19 +170,16 @@ export default class App extends Component {
 								title={'Your Location'}
 							/>
 						)} */}
-
-						{/* {this.state.flagLat && this.state.flagLong && (
-							<MapView.Marker
-								image={flag}
-								onPress={this.captureFlag}
-								coordinate={{
-									latitude: this.state.flagLat,
-									longitude: this.state.flagLong
-								}}
-								title={'Capture Flag'}
-							/>
-						)} */}
-						<MapView.Marker
+						{/* <MapView.Marker
+							image={flag}
+							onPress={this.captureFlag}
+							coordinate={{
+								latitude: this.state.flagLat,
+								longitude: this.state.flagLong
+							}}
+							title={'Capture Flag'}
+						/> */}
+						{/* <MapView.Marker
 							image={flag}
 							onPress={this.captureFlag}
 							coordinate={{
@@ -190,7 +187,7 @@ export default class App extends Component {
 								longitude: -2.2421
 							}}
 							title={'Football Museum'}
-						/>
+						/> */}
 					</MapView>
 				</View>
 			);
