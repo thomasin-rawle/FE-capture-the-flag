@@ -15,11 +15,6 @@ import {
     componentDidMount(){
       this.getScore()
     }
-    // componentWillUpdate(prevProps, prevState){
-    //   if (this.state.score !== prevState.score) {
-    //     this.getScore()
-    //   }
-    // }
     render() {
       return (
         <View style={styles.score}>

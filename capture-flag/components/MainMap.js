@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Platform, Text, View, StyleSheet, Dimensions, TouchableHighlight, Alert} from 'react-native';
+import { Platform, Text, View, StyleSheet, Dimensions, TouchableHighlight, Alert, AsyncStorage} from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import randomLocation from 'random-location';
 import { FontAwesome } from '@expo/vector-icons';
@@ -7,18 +7,22 @@ import geolib from 'geolib';
 import * as api from '../api';
 import Flag from './Flag';
 
+
 export default class MainMap extends Component {
 	state = {
 		errorMessage: null,
-		loading: true,
-		lat: 0,
-		long: 0,
-		nearFlag: false,
 		flagCaptured: false,
 		flagGenerated: false,
-		flagLat: 0,
-		flagLong: 0,
-		score: 0
+		 flagLat: 0,
+		 flagLong: 0,
+         lat: 0,
+		 long: 0,
+         loading: true,
+         name: '',
+         nearFlag: false,
+         score: 0,
+         username: ''
+
 	};
 	componentWillMount() {
 		if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -28,19 +32,11 @@ export default class MainMap extends Component {
 		} else {
 			this._getLocationAsync();
 
-			api.getUser('NickyBee').then(user =>
-				this.setState(
-					{
-						score: user.score,
-						flagCaptured: user.flagCaptured,
-						flagGenerated: user.flagGenerated,
-						flagLat: user.flagLatitude,
-						flagLong: user.flagLongitude,
-						username: user.username
-					},
-					this.generateFlag(user.username)
-				)
-			);
+			AsyncStorage.getItem('mainUser')
+			.then(userObj => {
+				const newMainObj = JSON.parse(userObj)
+				this.setState ({...newMainObj}, this.generateFlag(user.username))
+			})
 		}
 	}
 

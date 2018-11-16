@@ -23,15 +23,15 @@ export default class Login extends Component {
   loginUser = (user) => {
     api.getUserAfterLogin(user)
     .then(user => {
-      const { name, score, username } = user
-      const mainUser = { name, score, username } 
+      const { name, score, username, flagCaptured, flagGenerated, flagLatitude, flagLongitude } = user
+      const mainUser = { name, score, username, flagCaptured, flagGenerated, flagLatitude, flagLongitude } 
       this.setState({ 
         password: "", 
         confirm: "",
         error: false 
       })
       AsyncStorage.setItem("mainUser", JSON.stringify(mainUser))
-      this.props.navigation.navigate("Map")
+      this.props.navigation.navigate("mainStack")
     })
     .catch(error => {
       console.log(error)

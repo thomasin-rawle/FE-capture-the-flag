@@ -7,8 +7,7 @@ import {
 } from 'react-native';
 import { createStackNavigator, createDrawerNavigator } from 'react-navigation'
 import Login from "./components/Login";
-// import Login from "./components/Login";
-// import Register from "./components/Register";
+import Register from "./components/Register";
 // import ForgetPassword from "./app/components/ForgetPassword";
 import { FontAwesome } from '@expo/vector-icons';
 import MainMap from "./components/MainMap";
@@ -17,34 +16,11 @@ import Score from './components/Score'
 //import { getCenter } from 'geolib';
 
 
-// export default App = createStackNavigator({
-//   Home: {
-//     screen: Home,
-//     navigationOptions: {
-//       title: "Home"
-//     }
-//   },
-//   MainMap: {
-//     screen: MainMap,
-//     navigationOptions: {
-//       title: "Map"
-//     }
-//   }
-// });
-const noTransitionConfig = () => ({
-  transitionSpec: {
-    duration: 0,
-    timing: Animated.timing,
-    easing: Easing.step0
-  }
-})
-
-// drawer stack
 const DrawerStack = createDrawerNavigator({
   MainMap: {
         screen: MainMap,
         navigationOptions: {
-          title: "Map"
+          title: "MainMap"
         }
       }
 }, {
@@ -72,14 +48,12 @@ const MainNavigation = createStackNavigator({
 })
 const LoginStack = createStackNavigator({
   Login: { screen: Login },
-  // Register: { screen: Register },
+  Register: { screen: Register },
   // ForgetPassword: { screen: ForgetPassword }
 }, {
-  headerMode: 'float',
+  headerMode: 'none',
   navigationOptions: {
-    headerStyle: {backgroundColor: '#E73536'},
-    title: 'You are not logged in',
-    headerTintColor: 'white'
+
   }
 })
 
@@ -88,10 +62,11 @@ export default App = createStackNavigator({
    mainStack: { screen: MainNavigation }
 }, {
   // Default config for all screens
+  
   headerMode: 'none',
   title: 'Main',
-  initialRouteName: 'mainStack',
-  transitionConfig: noTransitionConfig
+  initialRouteName: 'loginStack',
+  
 })
 
 const styles = StyleSheet.create({
