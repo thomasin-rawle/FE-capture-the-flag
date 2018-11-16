@@ -27,3 +27,9 @@ export const patchFlagLocation = async (username, latUpdate, longUpdate) => {
 export const patchFlagCapture = async username => {
 	const { body } = await api.patch(`/flag/${username}/capture`);
 };
+
+export const patchZoneLocation = async (username, latUpdate, longUpdate) => {
+	// console.log(username, latUpdate, longUpdate);
+	const body = await api.patch(`/flag/${username}/zone?latitude=${latUpdate}&longitude=${longUpdate}`);
+	// console.log(body, '<<<<<<');
+};

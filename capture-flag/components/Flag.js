@@ -21,7 +21,7 @@ const Flag = props => {
 			/> */}
 			{/* {!this.state.flagCaptured ? this.captureFlag : () => alert("flag is captured")} */}
 			<MapView.Marker
-				image={!props.flagCaptured ? flag : <Ionicons name="home" size={32} color="green" />}
+				image={flag}
 				onPress={props.captureFlag}
 				coordinate={{
 					latitude: props.flagLat,

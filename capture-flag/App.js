@@ -17,34 +17,45 @@ export default class App extends Component {
 		flagGenerated: false,
 		flagLat: 0,
 		flagLong: 0,
-		score: 0
+		score: 0,
+		zoneLat: 0,
+		zoneLong: 0,
+		username: ''
 	};
 	componentWillMount() {
+		console.log('mounting');
 		if (Platform.OS === 'android' && !Constants.isDevice) {
 			this.setState({
 				errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
 			});
 		} else {
 			this._getLocationAsync();
-
-			api.getUser('NickyBee').then(user =>
+			api.getUser('gravity').then(user =>
 				this.setState(
 					{
 						score: user.score,
 						flagCaptured: user.flagCaptured,
 						flagGenerated: user.flagGenerated,
-						flagLat: user.flagLatitude,
-						flagLong: user.flagLongitude,
+						flagLat: user.flagLat,
+						flagLong: user.flagLong,
+						zoneLat: user.zoneLat,
+						zoneLong: user.zoneLong,
 						username: user.username
 					},
 					() => {
-						console.log(user.flagLatitude, user.flagLongitude);
-						if (!user.flagGenerated) this.generateFlag(user.username);
+						if (!user.flagGenerated && this.state.flagLat !== 0 && this.state.flagLong) this.generateFlag(user.username);
 					}
 				)
 			);
 		}
 	}
+
+	// componentDidUpdate(prevProp, prevState) {
+	// 	console.log('updating');
+	// 	if (prevState.flagCaptured !== this.state.flagCaptured) {
+	// 		this.generateZone(this.state.username);
+	// 	}
+	// }
 
 	_getLocationAsync = async () => {
 		let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -77,19 +88,33 @@ export default class App extends Component {
 		});
 	};
 
+	generateZone = username => {
+		const zoneCoordinate = {
+			latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
+			longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
+		};
+		api.patchZoneLocation(username, zoneCoordinate.latitude, zoneCoordinate.longitude);
+		this.setState({
+			zoneLat: zoneCoordinate.latitude,
+			zoneLong: zoneCoordinate.longitude
+		});
+	};
+
 	captureFlag = () => {
 		if (this.state.nearFlag) {
 			Alert.alert(
-				'Alert Title',
-				'My Alert Msg',
+				'Collect Flag',
+				'Collect Flag',
 				[
 					{
 						text: 'Capture the flag',
 						onPress: () => {
-							this.incrementScore();
+							// this.incrementScore();
 							api.patchFlagCapture(this.state.username, this.state.flagLong, this.state.flagLat);
+							this.generateZone(this.state.username);
 							this.setState({
-								flagCaptured: true
+								flagCaptured: true,
+								flagGenerated: false
 							});
 						}
 					},
@@ -99,7 +124,15 @@ export default class App extends Component {
 			);
 		}
 	};
-
+	dropFlag = () => {
+		if (this.state.nearFlag) {
+			this.incrementScore();
+			this.setState({
+				flagCaptured: false
+			});
+			this.generateFlag(this.state.username);
+		}
+	};
 	incrementScore = () => {
 		const scoreUpdate = 5;
 		api.patchScore(this.state.username, scoreUpdate);
@@ -108,14 +141,20 @@ export default class App extends Component {
 		});
 	};
 	amINear = () => {
-		const near = geolib.isPointInCircle({ latitude: this.state.lat, longitude: this.state.long }, { latitude: this.state.flagLat, longitude: this.state.flagLong }, 20);
+		let near = false;
+		if (!this.state.flagCaptured) {
+			near = geolib.isPointInCircle({ latitude: this.state.lat, longitude: this.state.long }, { latitude: this.state.flagLat, longitude: this.state.flagLong }, 20);
+		} else {
+			near = geolib.isPointInCircle({ latitude: this.state.lat, longitude: this.state.long }, { latitude: this.state.zoneLat, longitude: this.state.zoneLong }, 20);
+		}
 		this.setState({
 			nearFlag: near
 		});
 	};
 
 	render() {
-		console.log(this.state.flagCaptured);
+		console.log(this.state.flagLat, this.state.flagLong);
+		// console.log('flagCaptured', this.state.flagCaptured);
 		if (this.state.loading)
 			return (
 				<View style={styles.loading}>
@@ -168,8 +207,8 @@ export default class App extends Component {
 							/>
 						)} */}
 						{/* FLAG COMPONENT */}
-
-						{!this.state.flagCaptured && <Flag captureFlag={this.captureFlag} flagCaptured={this.state.flagCaptured} nearFlag={this.state.nearFlag} flagLat={this.state.flagLat} flagLong={this.state.flagLong} />}
+						{!this.state.flagCaptured && <Flag captureFlag={this.captureFlag} nearFlag={this.state.nearFlag} flagLat={this.state.flagLat} flagLong={this.state.flagLong} />}
+						{this.state.flagCaptured && <MapView.Circle center={{ latitude: this.state.flagLat, longitude: this.state.flagLong }} radius={20} fillColor="rgba(0, 255, 0, 0.3)" />}
 					</MapView>
 				</View>
 			);
