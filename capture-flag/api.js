@@ -22,7 +22,7 @@ export const patchScore = async (username, scoreUpdate) => {
 
 export const patchFlagLocation = async (username, latUpdate, longUpdate) => {
 	console.log(latUpdate, longUpdate);
-	const { body } = await api.patch(`/flag/${username}`, { latitude: latUpdate, longitude: longUpdate });
+	const { body } = await api.patch(`/flag/${username}?latitude=${latUpdate}&longitude=${longUpdate}`);
 	console.log(body.user);
 };
 
