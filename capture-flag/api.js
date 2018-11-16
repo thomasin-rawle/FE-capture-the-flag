@@ -4,7 +4,7 @@ import Frisbee from 'frisbee';
 
 es6promise.polyfill();
 =======
-// import axios from 'axios';
+import axios from 'axios';
 // const Frisbee = require("frisbee");
 // const BASE_URL = 'https://capture-flag1.herokuapp.com/api';
 
@@ -79,3 +79,20 @@ export const patchFlagCapture = async username => {
 =======
 };
 >>>>>>> 30923c015eb3af07d045e2c89eea817329c66a5f
+
+
+//////// I USED AXIOS HERE WAITING TO BE CHANGED TO FRISBEE
+
+const DB_URL = 'https://capture-flag1.herokuapp.com/api/user';
+
+export const getUserAfterLogin = async (user) => {
+    const { username, password } = user
+    const { data } = await axios.post(`${DB_URL}/login`, { username, password })
+    return data
+}
+
+export const addUser = async user => {
+    const { name, username, password, confirm } = user 
+    const { data } = await axios.post(DB_URL, { name, username, password, confirm })
+    return data
+}
