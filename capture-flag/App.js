@@ -115,6 +115,7 @@ export default class App extends Component {
 	};
 
 	render() {
+		console.log(this.state.flagCaptured);
 		if (this.state.loading)
 			return (
 				<View style={styles.loading}>
@@ -167,7 +168,8 @@ export default class App extends Component {
 							/>
 						)} */}
 						{/* FLAG COMPONENT */}
-						<Flag captureFlag={this.captureFlag} nearFlag={this.state.nearFlag} flagLat={this.state.flagLat} flagLong={this.state.flagLong} />
+
+						{!this.state.flagCaptured && <Flag captureFlag={this.captureFlag} flagCaptured={this.state.flagCaptured} nearFlag={this.state.nearFlag} flagLat={this.state.flagLat} flagLong={this.state.flagLong} />}
 					</MapView>
 				</View>
 			);

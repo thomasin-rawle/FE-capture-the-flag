@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, View } from 'react-native';
 import { MapView } from 'expo';
+import { Ionicons } from '@expo/vector-icons';
 import greenFlag from '../assets/green-flag.png';
 import redFlag from '../assets/red-flag.png';
 
@@ -20,7 +21,7 @@ const Flag = props => {
 			/> */}
 			{/* {!this.state.flagCaptured ? this.captureFlag : () => alert("flag is captured")} */}
 			<MapView.Marker
-				image={flag}
+				image={!props.flagCaptured ? flag : <Ionicons name="home" size={32} color="green" />}
 				onPress={props.captureFlag}
 				coordinate={{
 					latitude: props.flagLat,
