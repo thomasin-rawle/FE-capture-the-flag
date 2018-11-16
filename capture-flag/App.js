@@ -37,7 +37,10 @@ export default class App extends Component {
 						flagLong: user.flagLongitude,
 						username: user.username
 					},
-					this.generateFlag(user.username)
+					() => {
+						console.log(user.flagGenerated);
+						if (!user.flagGenerated) this.generateFlag(user.username);
+					}
 				)
 			);
 		}
@@ -87,6 +90,7 @@ export default class App extends Component {
 							api.patchFlagCapture(this.state.username, this.state.flagLong, this.state.flagLat);
 							this.setState({
 								flagCaptured: true
+								// flagGenerated: false
 							});
 						}
 					},
