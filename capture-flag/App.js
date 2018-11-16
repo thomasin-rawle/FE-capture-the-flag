@@ -38,7 +38,7 @@ export default class App extends Component {
 						username: user.username
 					},
 					() => {
-						console.log(user.flagGenerated);
+						console.log(user.flagLatitude, user.flagLongitude);
 						if (!user.flagGenerated) this.generateFlag(user.username);
 					}
 				)
@@ -90,7 +90,6 @@ export default class App extends Component {
 							api.patchFlagCapture(this.state.username, this.state.flagLong, this.state.flagLat);
 							this.setState({
 								flagCaptured: true
-								// flagGenerated: false
 							});
 						}
 					},
@@ -109,11 +108,7 @@ export default class App extends Component {
 		});
 	};
 	amINear = () => {
-		const near = geolib.isPointInCircle(
-			{ latitude: this.state.lat, longitude: this.state.long },
-			{ latitude: 53.4858, longitude: -2.2421 }, //need to fetch from BE
-			150
-		);
+		const near = geolib.isPointInCircle({ latitude: this.state.lat, longitude: this.state.long }, { latitude: this.state.flagLat, longitude: this.state.flagLong }, 20);
 		this.setState({
 			nearFlag: near
 		});
