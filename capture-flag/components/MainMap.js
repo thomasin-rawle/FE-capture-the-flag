@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Platform, Text, View, StyleSheet, Dimensions, Button, Alert, Image } from 'react-native';
+import { Platform, Text, View, StyleSheet, Dimensions, TouchableHighlight, Alert} from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import randomLocation from 'random-location';
+import { FontAwesome } from '@expo/vector-icons';
 import geolib from 'geolib';
 import * as api from '../api';
+import HeaderBar from './HeaderBar'
 import Flag from './Flag';
 
 export default class MainMap extends Component {
@@ -114,7 +116,18 @@ export default class MainMap extends Component {
 			nearFlag: near
 		});
 	};
-
+    handleRecenter = () => {
+        this.map.animateToRegion(this.userLocationWithDelta(), 500);
+      };
+    userLocationWithDelta = () => {
+            const {lat, long} = this.state
+            const screen = Dimensions.get('window');
+            const ASPECT_RATIO = screen.width / screen.height;
+            const latitudeDelta = 0.005;
+            const longitudeDelta = latitudeDelta * ASPECT_RATIO;
+            const userLocation = { latitude: lat, longitude: long, latitudeDelta, longitudeDelta };
+            return userLocation
+    }
 	render() {
 		if (this.state.loading)
 			return (
@@ -123,35 +136,16 @@ export default class MainMap extends Component {
 				</View>
 			);
 		else {
-			const screen = Dimensions.get('window');
-			const ASPECT_RATIO = screen.width / screen.height;
-			const latitudeDelta = 0.005;
-			const { lat, long } = this.state;
-			const initialRegion = {
-				latitudeDelta,
-				longitudeDelta: latitudeDelta * ASPECT_RATIO,
-				latitude: lat,
-				longitude: long
-			};
+            const {nearFlag, flagLat, flagLong} = this.state
 			return (
 				<View style={{ flex: 1 }}>
-					<View style={styles.topBar}>
-						<View style={styles.user}>
-							<Text>User</Text>
-						</View>
-						<View style={styles.logo}>
-							<Text>Flagland</Text>
-						</View>
-						<View style={styles.score}>
-							<Text>Score: {this.state.score}</Text>
-						</View>
-					</View>
+                <HeaderBar score={this.state.score} />
 					<MapView
 						ref={map => {
 							this.map = map;
 						}}
 						style={{ flex: 1 }}
-						initialRegion={initialRegion}
+						initialRegion={this.userLocationWithDelta()}
 						title={'capture flag'}
 						showsUserLocation={true}
 						followUserLocation={true}
@@ -168,8 +162,11 @@ export default class MainMap extends Component {
 							/>
 						)} */}
 						{/* FLAG COMPONENT */}
-						<Flag captureFlag={this.captureFlag} nearFlag={this.state.nearFlag} flagLat={this.state.flagLat} flagLong={this.state.flagLong} />
+						<Flag captureFlag={this.captureFlag} nearFlag={nearFlag} flagLat={flagLat} flagLong={flagLong} />
 					</MapView>
+                    <TouchableHighlight onPress={this.handleRecenter} underlayColor={'#ececec'} style={styles.recenterBtn}>
+                         <FontAwesome  name="bullseye" size={40} color="#00bbff" />
+                    </TouchableHighlight>
 				</View>
 			);
 		}
@@ -184,46 +181,20 @@ const styles = StyleSheet.create({
 		paddingTop: Constants.statusBarHeight,
 		backgroundColor: '#ecf0f1'
 	},
-	paragraph: {
-		margin: 24,
-		fontSize: 18,
-		textAlign: 'center'
-	},
-	button: {
-		backgroundColor: 'blue',
-		color: 'white',
-		padding: 20,
-		borderRadius: 100
-	},
-	buttonContainer: {
-		position: 'absolute',
-		bottom: 40,
-		right: 20
-	},
-	topBar: {
-		display: 'flex',
-		height: 70,
-		backgroundColor: 'green',
-		justifyContent: 'center',
-		alignItems: 'flex-end',
-		flexDirection: 'row',
-		paddingVertical: 10
-	},
-	user: {
-		color: 'black',
-		flex: 1,
-		alignItems: 'center',
-		flexGrow: 1
-	},
-	logo: {
-		flex: 1,
-		alignItems: 'center',
-		flexGrow: 2
-	},
-	score: {
-		color: 'black',
-		flex: 1,
-		alignItems: 'center',
-		flexGrow: 1
-	}
+	recenterBtn: {
+        position: 'absolute',
+        bottom: 40,
+        right: 20,
+        backgroundColor: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 150,
+        width: 60,
+        height: 60,
+        shadowColor: '#333',
+        shadowOpacity: 0.4,
+        shadowOffset: { width: 4, height: 4 },
+        elevation: 5
+      }
 });
