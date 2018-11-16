@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "es6-promise": "^4.2.5",
     "expo": "^31.0.2",
+    "frisbee": "^2.0.5",
     "geolib": "^2.0.24",
     "random-location": "^1.0.12",
     "react": "16.5.0",

@@ -28,7 +28,7 @@ export default class App extends Component {
 		} else {
 			this._getLocationAsync();
 
-			api.getUser('Jacobgodslayer').then(user =>
+			api.getUser('NickyBee').then(user =>
 				this.setState(
 					{
 						score: user.score,
@@ -38,7 +38,7 @@ export default class App extends Component {
 						flatLong: user.longitude,
 						username: user.username
 					},
-					this.generateFlag()
+					this.generateFlag(user.username)
 				)
 			);
 		}
@@ -53,8 +53,8 @@ export default class App extends Component {
 		}
 		Location.watchPositionAsync({ distanceInterval: 5 }, newLocation => {
 			if (this.state.lat !== newLocation.coords.latitude) {
-				console.log(this.state.lat, '<< state');
-				console.log(newLocation.coords.latitude, '<< new location');
+				// console.log(this.state.lat, '<< state');
+				// console.log(newLocation.coords.latitude, '<< new location');
 				this.setState({
 					lat: newLocation.coords.latitude,
 					long: newLocation.coords.longitude,
@@ -64,11 +64,13 @@ export default class App extends Component {
 			}
 		});
 	};
-	generateFlag = () => {
+	generateFlag = username => {
 		const flagCoordinate = {
 			latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
 			longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
 		};
+		// console.log(lagCoordinate.latitude, flagCoordinate.longitude);
+		api.patchFlagLocation(username, flagCoordinate.latitude, flagCoordinate.longitude);
 		this.setState({
 			flagLat: flagCoordinate.latitude,
 			flagLong: flagCoordinate.longitude,
@@ -100,10 +102,10 @@ export default class App extends Component {
 	};
 
 	incrementScore = () => {
-		const scoreUpdate = this.state.score + 5;
+		const scoreUpdate = 5;
 		api.patchScore(this.state.username, scoreUpdate);
 		this.setState({
-			score: scoreUpdate
+			score: this.state.score + scoreUpdate
 		});
 	};
 	amINear = () => {
@@ -168,18 +170,15 @@ export default class App extends Component {
 								title={'Your Location'}
 							/>
 						)} */}
-
-						{/* {this.state.flagLat && this.state.flagLong && (
-							<MapView.Marker
-								image={flag}
-								onPress={this.captureFlag}
-								coordinate={{
-									latitude: this.state.flagLat,
-									longitude: this.state.flagLong
-								}}
-								title={'Capture Flag'}
-							/>
-						)} */}
+						{/* <MapView.Marker
+							image={flag}
+							onPress={this.captureFlag}
+							coordinate={{
+								latitude: this.state.flagLat,
+								longitude: this.state.flagLong
+							}}
+							title={'Capture Flag'}
+						/> */}
 						{/* <MapView.Marker
 							image={flag}
 							onPress={this.captureFlag}
