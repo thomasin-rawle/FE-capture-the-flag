@@ -14,9 +14,9 @@ import {
 
 import * as api from "../api"
 
-import Map from '../components/Map'
+// import Map from '../components/Map'
 
-import { createStackNavigator } from "react-navigation";
+// import { createStackNavigator } from "react-navigation";
 
 export default class Login extends Component {
   state = {
@@ -37,6 +37,7 @@ export default class Login extends Component {
       this.props.navigation.navigate("Map")
     })
     .catch(error => {
+      console.log(error)
       this.setState({
         error: true
       })
@@ -48,7 +49,7 @@ export default class Login extends Component {
       <View style={styles.container}>
         <View behavior="padding" style={styles.container}>
           <View style={styles.logoContainer}>
-            <Text style={styles.subtext}>Capture the Flag</Text>
+            <Text style={styles.subtext}>FlagLand</Text>
           </View>
           {this.state.error && 
           <Text 
@@ -112,13 +113,13 @@ export default class Login extends Component {
 
   componentDidMount() {
     AsyncStorage.getItem('mainUser')
-    .then((res) => {
-      const { name, username, score } = JSON.parse(res)
-      this.setState({
-        mainUser: { name, username, score }
-      })
-      console.log(this.state)
-    })
+    // .then((res) => {
+    //   const { name, username, score } = JSON.parse(res)
+    //   this.setState({
+    //     mainUser: { name, username, score }
+    //   })
+    //   console.log(this.state)
+    // })
   }
 
    
