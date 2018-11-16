@@ -1,7 +1,7 @@
 <<<<<<< HEAD
 import es6promise from 'es6-promise';
 import Frisbee from 'frisbee';
-import axios from 'axios';
+
 const DB_URL = 'https://capture-flag1.herokuapp.com/api/user';
 
 es6promise.polyfill();
