@@ -1,3 +1,4 @@
+
 import React, { Component } from "react";
 import {
   AppRegistry,
@@ -13,10 +14,6 @@ import {
 } from "react-native";
 
 import * as api from "../api"
-
-// import Map from '../components/Map'
-
-// import { createStackNavigator } from "react-navigation";
 
 export default class Login extends Component {
   state = {
@@ -121,9 +118,6 @@ export default class Login extends Component {
     //   console.log(this.state)
     // })
   }
-
-   
-  
 }
 
 
