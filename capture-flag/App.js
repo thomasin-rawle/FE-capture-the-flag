@@ -3,9 +3,11 @@ import {
   StyleSheet,
   View,
   Animated,
-  Easing
+  Easing,
+  AsyncStorage, 
+  Text
 } from 'react-native';
-import { createStackNavigator, createDrawerNavigator } from 'react-navigation'
+import { createStackNavigator, createDrawerNavigator, createSwitchNavigator } from 'react-navigation'
 import Login from "./components/Login";
 import Register from "./components/Register";
 // import ForgetPassword from "./app/components/ForgetPassword";
@@ -57,17 +59,51 @@ const LoginStack = createStackNavigator({
   }
 })
 
-export default App = createStackNavigator({
-  loginStack: { screen: LoginStack },
-   mainStack: { screen: MainNavigation }
-}, {
-  // Default config for all screens
+// export default App = createStackNavigator({
+//   loginStack: { screen: LoginStack },
+//    mainStack: { screen: MainNavigation }
+// }, {
+//   // Default config for all screens
   
-  headerMode: 'none',
-  title: 'Main',
-  initialRouteName: 'loginStack',
+//   headerMode: 'none',
+//   title: 'Main',
+//   initialRouteName: 'loginStack',
   
-})
+// })
+
+class App extends Component {
+
+  componentDidMount() {
+    console.log('AppNav mounted')
+    this._bootstrapAsync();
+    
+  }
+  _bootstrapAsync = async () => {
+    const userToken = await AsyncStorage.getItem('mainUser');
+    this.props.navigation.navigate(userToken ? 'mainStack' : 'loginStack');
+  };
+  render() {
+    
+    return (
+     <View>
+       <Text>...Loading things...</Text>
+     </View>
+    );
+  }
+}
+
+
+
+export default createSwitchNavigator(
+  {
+    AuthLoading: App,
+    loginStack: { screen: LoginStack },
+    mainStack: { screen: MainNavigation }
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
