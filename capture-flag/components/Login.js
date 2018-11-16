@@ -108,8 +108,8 @@ export default class Login extends Component {
     );
   }
 
-  componentDidMount() {
-    AsyncStorage.getItem('mainUser')
+  // componentDidMount() {
+  //   AsyncStorage.getItem('mainUser')
     // .then((res) => {
     //   const { name, username, score } = JSON.parse(res)
     //   this.setState({
@@ -117,7 +117,7 @@ export default class Login extends Component {
     //   })
     //   console.log(this.state)
     // })
-  }
+//   }
 }
 
 
