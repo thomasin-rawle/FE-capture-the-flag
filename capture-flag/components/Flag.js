@@ -7,8 +7,6 @@ import redFlag from "../assets/red-flag.png";
 
 const Flag = props => {
   const flag = props.nearFlag ? greenFlag : redFlag;
-  console.log(props,"Propsssss");
-  // console.log("hi");
   return (
     <View>
          {/* <Button title="Get Location" onPress={() => alert("hello")} /> */}
@@ -29,7 +27,6 @@ const Flag = props => {
           latitude: props.flagLat,
           longitude: props.flagLong
         }}
-        title={'random Flag'}
       />
     </View>
   );
