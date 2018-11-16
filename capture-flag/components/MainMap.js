@@ -5,7 +5,6 @@ import randomLocation from 'random-location';
 import { FontAwesome } from '@expo/vector-icons';
 import geolib from 'geolib';
 import * as api from '../api';
-import HeaderBar from './HeaderBar'
 import Flag from './Flag';
 
 export default class MainMap extends Component {
@@ -139,7 +138,6 @@ export default class MainMap extends Component {
             const {nearFlag, flagLat, flagLong} = this.state
 			return (
 				<View style={{ flex: 1 }}>
-                <HeaderBar score={this.state.score} />
 					<MapView
 						ref={map => {
 							this.map = map;
