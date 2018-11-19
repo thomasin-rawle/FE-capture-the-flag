@@ -15,10 +15,6 @@ export default class Sidebar extends Component {
   componentDidMount () {
     this.getUserInfo()
   }
-  logOutUser = () => {
-    AsyncStorage.removeItem('mainUser')
-    this.props.navigation.navigate('Login')
-  }
   getUserInfo = () => {
     AsyncStorage.getItem('mainUser')
     .then(mainUser => {
@@ -37,7 +33,7 @@ export default class Sidebar extends Component {
          <Text style={styles.drawerItem}>{name}</Text>
          <Text style={styles.drawerItem}>{username}</Text>
          <Text style={styles.drawerItem}>Score: {score}</Text>
-         <TouchableHighlight onPress={() => this.logOutUser()} style={styles.logOutButton} >
+         <TouchableHighlight onPress={() => this.props.logOut()} style={styles.logOutButton} >
            <Text style={{color: 'white', fontSize:20}}>Log Out</Text>
          </TouchableHighlight>
       </Content>

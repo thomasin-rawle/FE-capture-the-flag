@@ -143,6 +143,10 @@ export default class MainMap extends Component {
 			nearZone: zone
 		});
   };
+  logOutUser = () => {
+    AsyncStorage.removeItem('mainUser')
+    this.props.navigation.navigate('Login')
+  }
   handleRecenter = () => {
     this.map.animateToRegion(this.userLocationWithDelta(), 500);
   };
@@ -177,7 +181,7 @@ export default class MainMap extends Component {
 				<View style={{ flex: 1 }}>
 				<Drawer
                 ref={(ref) => { this.drawer = ref; }}
-                content={<SideBar />}
+                content={<SideBar logOut={this.logOutUser}/>}
                 onClose={() => this.closeDrawer()} >
 				<HeaderBar openDrawer={this.openDrawer.bind(this)} score={this.state.score}/>
 				
