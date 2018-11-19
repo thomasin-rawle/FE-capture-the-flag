@@ -3,9 +3,12 @@ import { Platform, Text, View, StyleSheet, Dimensions, TouchableHighlight, Alert
 import { Constants, Location, Permissions, MapView } from 'expo';
 import randomLocation from 'random-location';
 import { FontAwesome } from '@expo/vector-icons';
+import {Drawer} from 'native-base';
 import geolib from 'geolib';
 import * as api from '../api';
 import Flag from './Flag';
+import HeaderBar from './HeaderBar'
+import SideBar from './SideBar'
 
 
 export default class MainMap extends Component {
@@ -144,6 +147,12 @@ export default class MainMap extends Component {
   handleRecenter = () => {
     this.map.animateToRegion(this.userLocationWithDelta(), 500);
   };
+  closeDrawer = () => {
+    this.drawer._root.close()
+  };
+  openDrawer = () => {
+    this.drawer._root.open()
+  };
   userLocationWithDelta = () => {
     const {lat, long} = this.state
     const screen = Dimensions.get('window');
@@ -155,6 +164,7 @@ export default class MainMap extends Component {
 }
 
 	render() {
+		
 		console.log(this.state.flagLat, this.state.flagLong);
 		// console.log('flagCaptured', this.state.flagCaptured);
 		if (this.state.loading)
@@ -167,6 +177,12 @@ export default class MainMap extends Component {
 			const { lat, long } = this.state;
 			return (
 				<View style={{ flex: 1 }}>
+				<Drawer
+                ref={(ref) => { this.drawer = ref; }}
+                content={<SideBar />}
+                onClose={() => this.closeDrawer()} >
+				<HeaderBar openDrawer={this.openDrawer.bind(this)} score={this.state.score}/>
+				
 					<MapView
 						ref={map => {
 							this.map = map;
@@ -184,6 +200,7 @@ export default class MainMap extends Component {
 				<TouchableHighlight onPress={this.handleRecenter} underlayColor={'#ececec'} style={styles.recenterBtn}>
 					<FontAwesome  name="bullseye" size={40} color="#00bbff" />
 				</TouchableHighlight>
+				</Drawer>
 				</View>
 			);
 		}

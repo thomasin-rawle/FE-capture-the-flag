@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import {Text, View, Button, AsyncStorage, TouchableHighlight, StyleSheet} from 'react-native';
+import {Text, AsyncStorage, TouchableHighlight, StyleSheet} from 'react-native';
+import {Content} from 'native-base';
 // import * as api from '../api'
 
-class Drawer extends Component {
+export default class Sidebar extends Component {
 
   state = {
     name: '',
@@ -32,14 +33,14 @@ class Drawer extends Component {
   render() {
     const {name, username, score} = this.state
     return (
-      <View style={styles.drawerContainer}>
-        <Text style={styles.drawerItem}>{name}</Text>
-        <Text style={styles.drawerItem}>{username}</Text>
-        <Text style={styles.drawerItem}>Score: {score}</Text>
-        <TouchableHighlight onPress={() => this.logOutUser()} style={styles.logOutButton} >
-          <Text style={{color: 'white', fontSize:20}}>Log Out</Text>
-        </TouchableHighlight>
-      </View>
+      <Content style={{backgroundColor:'#FFFFFF', paddingTop:90}}>
+         <Text style={styles.drawerItem}>{name}</Text>
+         <Text style={styles.drawerItem}>{username}</Text>
+         <Text style={styles.drawerItem}>Score: {score}</Text>
+         <TouchableHighlight onPress={() => this.logOutUser()} style={styles.logOutButton} >
+           <Text style={{color: 'white', fontSize:20}}>Log Out</Text>
+         </TouchableHighlight>
+      </Content>
     );
   }
 }
@@ -64,4 +65,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Drawer;
+module.exports = Sidebar;
