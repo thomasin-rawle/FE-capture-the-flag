@@ -9,6 +9,8 @@ import * as api from '../api';
 import Flag from './Flag';
 import HeaderBar from './HeaderBar'
 import SideBar from './SideBar'
+import {YellowBox} from 'react-native'
+YellowBox.ignoreWarnings(['Require cycle:']);
 
 export default class MainMap extends Component {
 	state = {
