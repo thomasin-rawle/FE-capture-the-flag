@@ -3,9 +3,12 @@ import { Platform, Text, View, StyleSheet, Dimensions, TouchableHighlight, Alert
 import { Constants, Location, Permissions, MapView } from 'expo';
 import randomLocation from 'random-location';
 import { FontAwesome } from '@expo/vector-icons';
+import {Drawer} from 'native-base';
 import geolib from 'geolib';
 import * as api from '../api';
 import Flag from './Flag';
+import HeaderBar from './HeaderBar'
+import SideBar from './SideBar'
 
 export default class MainMap extends Component {
 	state = {
@@ -139,22 +142,29 @@ export default class MainMap extends Component {
 			nearFlag: flag,
 			nearZone: zone
 		});
-	};
-	handleRecenter = () => {
-		this.map.animateToRegion(this.userLocationWithDelta(), 500);
-	};
-	userLocationWithDelta = () => {
-		const { lat, long } = this.state;
-		const screen = Dimensions.get('window');
-		const ASPECT_RATIO = screen.width / screen.height;
-		const latitudeDelta = 0.005;
-		const longitudeDelta = latitudeDelta * ASPECT_RATIO;
-		const userLocation = { latitude: lat, longitude: long, latitudeDelta, longitudeDelta };
-		return userLocation;
-	};
+  };
+  handleRecenter = () => {
+    this.map.animateToRegion(this.userLocationWithDelta(), 500);
+  };
+  closeDrawer = () => {
+    this.drawer._root.close()
+  };
+  openDrawer = () => {
+    this.drawer._root.open()
+  };
+  userLocationWithDelta = () => {
+    const {lat, long} = this.state
+    const screen = Dimensions.get('window');
+    const ASPECT_RATIO = screen.width / screen.height;
+    const latitudeDelta = 0.005;
+    const longitudeDelta = latitudeDelta * ASPECT_RATIO;
+    const userLocation = { latitude: lat, longitude: long, latitudeDelta, longitudeDelta };
+    return userLocation
+}
 
 	render() {
-		console.log(this.state.flagLat, this.state.flagLong, '<<<<<');
+		
+		console.log(this.state.flagLat, this.state.flagLong);
 		if (this.state.loading)
 			return (
 				<View style={styles.loading}>
@@ -165,6 +175,12 @@ export default class MainMap extends Component {
 			const { lat, long } = this.state;
 			return (
 				<View style={{ flex: 1 }}>
+				<Drawer
+                ref={(ref) => { this.drawer = ref; }}
+                content={<SideBar />}
+                onClose={() => this.closeDrawer()} >
+				<HeaderBar openDrawer={this.openDrawer.bind(this)} score={this.state.score}/>
+				
 					<MapView
 						ref={map => {
 							this.map = map;
@@ -179,9 +195,11 @@ export default class MainMap extends Component {
 						{!this.state.flagCaptured && <Flag captureFlag={this.captureFlag} nearFlag={this.state.nearFlag} flagLat={this.state.flagLat} flagLong={this.state.flagLong} />}
 						{this.state.flagCaptured && <MapView.Circle center={{ latitude: this.state.zoneLat, longitude: this.state.zoneLong }} radius={20} fillColor="rgba(0, 255, 0, 0.3)" />}
 					</MapView>
-					<TouchableHighlight onPress={this.handleRecenter} underlayColor={'#ececec'} style={styles.recenterBtn}>
-						<FontAwesome name="bullseye" size={40} color="#00bbff" />
-					</TouchableHighlight>
+				<TouchableHighlight onPress={this.handleRecenter} underlayColor={'#ececec'} style={styles.recenterBtn}>
+					<FontAwesome  name="bullseye" size={40} color="#00bbff" />
+				</TouchableHighlight>
+				</Drawer>
+
 				</View>
 			);
 		}

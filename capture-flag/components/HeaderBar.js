@@ -1,64 +1,65 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Text, View, StyleSheet } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 import {
-    Text,
-    View,
-    StyleSheet
-   
-  } from 'react-native';
-  import { FontAwesome } from '@expo/vector-icons';
+  Header,
+  Left,
+  Right,
+  Body,
+  Title,
+} from 'native-base';
 
-const HeaderBar = ({score}) => {
+class HeaderBar extends Component {
+  render() {
     return (
-        <View style={styles.topBar}>
-            <View style={styles.user}>
-              <FontAwesome name="user" size={30} color="white" />
-            </View>
-            <View style={styles.logo}>
-              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20}}>Capture Flag</Text>
-            </View>
-            <View style={styles.score}>
-              <FontAwesome name="trophy" size={30} color="white" />
-              <Text style={styles.scoreNumber}>{score}</Text>
-            </View>
-          </View>
+      <Header style={styles.topBar}>
+        <Left style={styles.user}>
+          <FontAwesome
+            onPress={() => this.props.openDrawer()}
+            name="user"
+            size={30}
+            color="white"
+          />
+        </Left>
+        <Body>
+          <Title style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>
+            FlagLand
+          </Title>
+        </Body>
+        <Right style={styles.score}>
+          <FontAwesome name="trophy" size={30} color="white" />
+          <Text style={styles.scoreNumber}>{this.props.score}</Text>
+        </Right>
+      </Header>
     );
-};
-const styles = StyleSheet.create({
+  }
+}
 
-    topBar: {
-      display: 'flex',
-      height: 80,
-      backgroundColor: '#00bbff',
-      justifyContent: 'center',
-      alignItems: 'flex-end',
-      flexDirection: 'row',
-      paddingVertical: 10
-    },
-    user: {
-      color: 'white',
-      flex: 1,
-      alignItems: 'center',
-      flexGrow: 1
-    },
-    logo: {
-      flex: 1,
-      alignItems: 'center',
-      flexGrow: 2
-    },
-    score: {
-      color: 'white',
-      display: 'flex',
-      flex: 1,
-      alignItems: 'flex-end',
-      justifyContent: 'center',
-      flexGrow: 1,
-      flexDirection: 'row'
-    },
-    scoreNumber: {
-      color: 'white',
-      fontSize: 20,
-      paddingLeft: 5
-    }
-  });
+const styles = StyleSheet.create({
+  topBar: {
+    backgroundColor: '#00bbff',
+    justifyContent: 'center'
+  },
+  user: {
+    color: 'white',
+    alignItems: 'center'
+  },
+  logo: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  score: {
+    color: 'white',
+    display: 'flex',
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center'
+  },
+  scoreNumber: {
+    color: 'white',
+    fontSize: 20,
+    paddingLeft: 5
+  }
+});
 
 export default HeaderBar;
