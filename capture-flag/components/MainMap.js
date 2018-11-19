@@ -31,20 +31,27 @@ export default class MainMap extends Component {
 				errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
 			});
 		} else {
-			this._getLocationAsync();
-
-			AsyncStorage.getItem('mainUser').then(userObj => {
-				const newMainObj = JSON.parse(userObj);
-				console.log(newMainObj);
-				this.setState({ ...newMainObj }, () => {
-					if (!this.state.flagGenerated) {
-						this.generateFlag(this.state.username);
-					}
+			this._getLocationAsync()
+				.then(() => AsyncStorage.getItem('mainUser'))
+				.then(userObj => {
+					const newMainObj = JSON.parse(userObj);
+					this.setState(
+						{ ...newMainObj }
+						// () => {
+						// if (!this.state.flagGenerated) {
+						// 	this.generateFlag(this.state.username);
+						// }}
+					);
 				});
-			});
 		}
 	}
-
+	componentDidUpdate(prevProps, prevState) {
+		if (prevState.lat !== this.state.lat && prevState.long !== this.state.long) {
+			if (!this.state.flagGenerated) {
+				this.generateFlag(this.state.username);
+			}
+		}
+	}
 	_getLocationAsync = async () => {
 		let { status } = await Permissions.askAsync(Permissions.LOCATION);
 		if (status !== 'granted') {
