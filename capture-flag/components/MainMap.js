@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Platform, Text, View, StyleSheet, Dimensions, TouchableHighlight, Alert, AsyncStorage} from 'react-native';
+import { Platform, Text, View, StyleSheet, Dimensions, TouchableHighlight, Alert, AsyncStorage } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import randomLocation from 'random-location';
 import { FontAwesome } from '@expo/vector-icons';
@@ -9,7 +9,6 @@ import * as api from '../api';
 import Flag from './Flag';
 import HeaderBar from './HeaderBar'
 import SideBar from './SideBar'
-
 
 export default class MainMap extends Component {
 	state = {
@@ -25,6 +24,7 @@ export default class MainMap extends Component {
 		score: 0,
 		zoneLat: 0,
 		zoneLong: 0,
+		nearZone: false,
 		username: ''
 	};
 	componentWillMount() {
@@ -33,23 +33,22 @@ export default class MainMap extends Component {
 			this.setState({
 				errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
 			});
-
 		} else {
-			this._getLocationAsync();
-
-			AsyncStorage.getItem('mainUser')
-			.then(userObj => {
-				const newMainObj = JSON.parse(userObj)
-				this.setState ({...newMainObj},
-					() => {
-						if (!this.state.flagGenerated ) this.generateFlag(this.state.username);
-					}
-				)
+			this._getLocationAsync()
+				.then(() => AsyncStorage.getItem('mainUser'))
+				.then(userObj => {
+					const newMainObj = JSON.parse(userObj);
+					return api.getUser(newMainObj.username).then(user => this.setState({ ...user }));
 				});
 		}
 	}
-	
-
+	componentDidUpdate(prevProps, prevState) {
+		if (prevState.lat !== this.state.lat && prevState.long !== this.state.long) {
+			if (!this.state.flagGenerated) {
+				this.generateFlag(this.state.username);
+			}
+		}
+	}
 	_getLocationAsync = async () => {
 		let { status } = await Permissions.askAsync(Permissions.LOCATION);
 		if (status !== 'granted') {
@@ -65,13 +64,16 @@ export default class MainMap extends Component {
 					loading: false
 				});
 				this.amINear();
+				if (this.state.flagCaptured) {
+					this.dropFlag();
+				}
 			}
 		});
 	};
 	generateFlag = username => {
 		const flagCoordinate = {
-			latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
-			longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
+			latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 100).latitude,
+			longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 100).longitude
 		};
 		api.patchFlagLocation(username, flagCoordinate.latitude, flagCoordinate.longitude);
 		this.setState({
@@ -83,8 +85,8 @@ export default class MainMap extends Component {
 
 	generateZone = username => {
 		const zoneCoordinate = {
-			latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
-			longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
+			latitude: randomLocation.randomCirclePoint({ latitude: this.state.flagLat, longitude: this.state.flagLong }, 500).latitude,
+			longitude: randomLocation.randomCirclePoint({ latitude: this.state.flagLat, longitude: this.state.flagLong }, 500).longitude
 		};
 		api.patchZoneLocation(username, zoneCoordinate.latitude, zoneCoordinate.longitude);
 		this.setState({
@@ -118,7 +120,7 @@ export default class MainMap extends Component {
 		}
 	};
 	dropFlag = () => {
-		if (this.state.nearFlag) {
+		if (this.state.nearZone) {
 			this.incrementScore();
 			this.setState({
 				flagCaptured: false
@@ -134,14 +136,11 @@ export default class MainMap extends Component {
 		});
 	};
 	amINear = () => {
-		let near = false;
-		if (!this.state.flagCaptured) {
-			near = geolib.isPointInCircle({ latitude: this.state.lat, longitude: this.state.long }, { latitude: this.state.flagLat, longitude: this.state.flagLong }, 20);
-		} else {
-			near = geolib.isPointInCircle({ latitude: this.state.lat, longitude: this.state.long }, { latitude: this.state.zoneLat, longitude: this.state.zoneLong }, 20);
-		}
+		let flag = geolib.isPointInCircle({ latitude: this.state.lat, longitude: this.state.long }, { latitude: this.state.flagLat, longitude: this.state.flagLong }, 20);
+		let zone = geolib.isPointInCircle({ latitude: this.state.lat, longitude: this.state.long }, { latitude: this.state.zoneLat, longitude: this.state.zoneLong }, 20);
 		this.setState({
-			nearFlag: near
+			nearFlag: flag,
+			nearZone: zone
 		});
   };
   handleRecenter = () => {
@@ -166,7 +165,6 @@ export default class MainMap extends Component {
 	render() {
 		
 		console.log(this.state.flagLat, this.state.flagLong);
-		// console.log('flagCaptured', this.state.flagCaptured);
 		if (this.state.loading)
 			return (
 				<View style={styles.loading}>
@@ -195,39 +193,40 @@ export default class MainMap extends Component {
 					>
 						{/* FLAG COMPONENT */}
 						{!this.state.flagCaptured && <Flag captureFlag={this.captureFlag} nearFlag={this.state.nearFlag} flagLat={this.state.flagLat} flagLong={this.state.flagLong} />}
-						{this.state.flagCaptured && <MapView.Circle center={{ latitude: this.state.flagLat, longitude: this.state.flagLong }} radius={20} fillColor="rgba(0, 255, 0, 0.3)" />}
+						{this.state.flagCaptured && <MapView.Circle center={{ latitude: this.state.zoneLat, longitude: this.state.zoneLong }} radius={20} fillColor="rgba(0, 255, 0, 0.3)" />}
 					</MapView>
 				<TouchableHighlight onPress={this.handleRecenter} underlayColor={'#ececec'} style={styles.recenterBtn}>
 					<FontAwesome  name="bullseye" size={40} color="#00bbff" />
 				</TouchableHighlight>
 				</Drawer>
+
 				</View>
 			);
 		}
-  }
+	}
 }
-  const styles = StyleSheet.create({
-    loading: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingTop: Constants.statusBarHeight,
-      backgroundColor: '#ecf0f1'
-    },
-    recenterBtn: {
-          position: 'absolute',
-          bottom: 40,
-          right: 20,
-          backgroundColor: 'white',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 150,
-          width: 60,
-          height: 60,
-          shadowColor: '#333',
-          shadowOpacity: 0.4,
-          shadowOffset: { width: 4, height: 4 },
-          elevation: 5
-        }
-  });
+const styles = StyleSheet.create({
+	loading: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		paddingTop: Constants.statusBarHeight,
+		backgroundColor: '#ecf0f1'
+	},
+	recenterBtn: {
+		position: 'absolute',
+		bottom: 40,
+		right: 20,
+		backgroundColor: 'white',
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 150,
+		width: 60,
+		height: 60,
+		shadowColor: '#333',
+		shadowOpacity: 0.4,
+		shadowOffset: { width: 4, height: 4 },
+		elevation: 5
+	}
+});
