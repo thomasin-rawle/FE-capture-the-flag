@@ -37,7 +37,6 @@ export default class MainMap extends Component {
 			AsyncStorage.getItem('mainUser')
 			.then(userObj => {
 				const newMainObj = JSON.parse(userObj)
-				console.log(newMainObj)
 				this.setState ({...newMainObj},
 					() => {
 						if (!this.state.flagGenerated ) this.generateFlag(this.state.username);
