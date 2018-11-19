@@ -35,13 +35,7 @@ export default class MainMap extends Component {
 				.then(() => AsyncStorage.getItem('mainUser'))
 				.then(userObj => {
 					const newMainObj = JSON.parse(userObj);
-					this.setState(
-						{ ...newMainObj }
-						// () => {
-						// if (!this.state.flagGenerated) {
-						// 	this.generateFlag(this.state.username);
-						// }}
-					);
+					return api.getUser(newMainObj.username).then(user => this.setState({ ...user }));
 				});
 		}
 	}
@@ -75,8 +69,8 @@ export default class MainMap extends Component {
 	};
 	generateFlag = username => {
 		const flagCoordinate = {
-			latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).latitude,
-			longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 500).longitude
+			latitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 100).latitude,
+			longitude: randomLocation.randomCirclePoint({ latitude: this.state.lat, longitude: this.state.long }, 100).longitude
 		};
 		api.patchFlagLocation(username, flagCoordinate.latitude, flagCoordinate.longitude);
 		this.setState({
@@ -109,7 +103,7 @@ export default class MainMap extends Component {
 						onPress: () => {
 							// this.incrementScore();
 							api.patchFlagCapture(this.state.username, this.state.flagLong, this.state.flagLat);
-							this.generateFlag(this.state.username);
+							this.generateZone(this.state.username);
 							this.setState({
 								flagCaptured: true,
 								flagGenerated: false
@@ -128,7 +122,7 @@ export default class MainMap extends Component {
 			this.setState({
 				flagCaptured: false
 			});
-			this.generateZone(this.state.username);
+			this.generateFlag(this.state.username);
 		}
 	};
 	incrementScore = () => {
@@ -160,8 +154,7 @@ export default class MainMap extends Component {
 	};
 
 	render() {
-		console.log(this.state.flagLat, this.state.flagLong);
-		// console.log('flagCaptured', this.state.flagCaptured);
+		console.log(this.state.flagLat, this.state.flagLong, '<<<<<');
 		if (this.state.loading)
 			return (
 				<View style={styles.loading}>
