@@ -17,7 +17,10 @@ export const getUser = async username => {
 	const { body } = await api.get(`/user/${username}`);
 	return body.user;
 };
-
+export const getAllUsers = async () => {
+	const { body } = await api.get(`/users`);
+	return body.users;
+};
 export const patchScore = async (username, scoreUpdate) => {
 	const { body } = await api.patch(`/user/${username}?score=${scoreUpdate}`);
 };

@@ -9,6 +9,7 @@ import * as api from '../api';
 import Flag from './Flag';
 import HeaderBar from './HeaderBar';
 import SideBar from './SideBar';
+import Scoreboard from './Scoreboard';
 import { YellowBox } from 'react-native';
 YellowBox.ignoreWarnings(['Require cycle:']);
 
@@ -32,23 +33,22 @@ export default class MainMap extends Component {
 	componentWillMount() {
 		console.log('mounting');
 		Expo.Font.loadAsync({
-			'Roboto': require('native-base/Fonts/Roboto.ttf'),
-			'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-		  })
-		  .then(() => {
-			  if (Platform.OS === 'android' && !Constants.isDevice) {
-				  this.setState({
-					  errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
-				  });
-			  } else {
-				  this._getLocationAsync()
-					  .then(() => AsyncStorage.getItem('mainUser'))
-					  .then(userObj => {
-						  const newMainObj = JSON.parse(userObj);
-						  return api.getUser(newMainObj.username).then(user => this.setState({ ...user }));
-					  });
-			  }
-		  })
+			Roboto: require('native-base/Fonts/Roboto.ttf'),
+			Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf')
+		}).then(() => {
+			if (Platform.OS === 'android' && !Constants.isDevice) {
+				this.setState({
+					errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
+				});
+			} else {
+				this._getLocationAsync()
+					.then(() => AsyncStorage.getItem('mainUser'))
+					.then(userObj => {
+						const newMainObj = JSON.parse(userObj);
+						return api.getUser(newMainObj.username).then(user => this.setState({ ...user }));
+					});
+			}
+		});
 	}
 	componentDidUpdate(prevProps, prevState) {
 		if (prevState.lat !== this.state.lat && prevState.long !== this.state.long) {
@@ -171,11 +171,17 @@ export default class MainMap extends Component {
 	handleRecenter = () => {
 		this.map.animateToRegion(this.userLocationWithDelta(), 500);
 	};
-	closeDrawer = () => {
-		this.drawer._root.close();
+	closeUserDrawer = () => {
+		this.UserDrawer._root.close();
 	};
-	openDrawer = () => {
-		this.drawer._root.open();
+	openUserDrawer = () => {
+		this.UserDrawer._root.open();
+	};
+	closeScoreDrawer = () => {
+		this.ScoreDrawer._root.close();
+	};
+	openScoreDrawer = () => {
+		this.ScoreDrawer._root.open();
 	};
 	userLocationWithDelta = () => {
 		const { lat, long } = this.state;
@@ -202,30 +208,43 @@ export default class MainMap extends Component {
 				<View style={{ flex: 1 }}>
 					<Drawer
 						ref={ref => {
-							this.drawer = ref;
+							this.UserDrawer = ref;
 						}}
 						content={<SideBar logOut={this.logOutUser} />}
-						onClose={() => this.closeDrawer()}
+						side="left"
+						onClose={() => this.closeUserDrawer()}
 					>
-						<HeaderBar openDrawer={this.openDrawer.bind(this)} score={this.state.score} />
-
-						<MapView
-							ref={map => {
-								this.map = map;
+						<Drawer
+							ref={ref => {
+								this.ScoreDrawer = ref;
 							}}
-							style={{ flex: 1 }}
-							initialRegion={this.userLocationWithDelta()}
-							title={'capture flag'}
-							showsUserLocation={true}
-							followUserLocation={true}
+							content={<Scoreboard />}
+							// openDrawerOffset={100}
+							side="right"
+							onClose={() => this.closeScoreDrawer()}
 						>
-							{/* FLAG COMPONENT */}
-							{!this.state.flagCaptured && <Flag captureFlag={this.captureFlag} nearFlag={this.state.nearFlag} flagLat={this.state.flagLat} flagLong={this.state.flagLong} />}
-							{this.state.flagCaptured && <MapView.Circle center={{ latitude: this.state.zoneLat, longitude: this.state.zoneLong }} radius={20} fillColor="rgba(0, 255, 0, 0.3)" />}
-						</MapView>
-						<TouchableHighlight onPress={this.handleRecenter} underlayColor={'#ececec'} style={styles.recenterBtn}>
-							<FontAwesome name="bullseye" size={40} color="#00bbff" />
-						</TouchableHighlight>
+							<View style={{ flex: 1 }}>
+								<HeaderBar openUserDrawer={this.openUserDrawer.bind(this.UserDrawer)} openScoreDrawer={this.openScoreDrawer.bind(this.ScoreDrawer)} score={this.state.score} />
+
+								<MapView
+									ref={map => {
+										this.map = map;
+									}}
+									style={{ flex: 1 }}
+									initialRegion={this.userLocationWithDelta()}
+									title={'capture flag'}
+									showsUserLocation={true}
+									followUserLocation={true}
+								>
+									{/* FLAG COMPONENT */}
+									{!this.state.flagCaptured && <Flag captureFlag={this.captureFlag} nearFlag={this.state.nearFlag} flagLat={this.state.flagLat} flagLong={this.state.flagLong} />}
+									{this.state.flagCaptured && <MapView.Circle center={{ latitude: this.state.zoneLat, longitude: this.state.zoneLong }} radius={20} fillColor="rgba(0, 255, 0, 0.3)" />}
+								</MapView>
+								<TouchableHighlight onPress={this.handleRecenter} underlayColor={'#ececec'} style={styles.recenterBtn}>
+									<FontAwesome name="bullseye" size={40} color="#00bbff" />
+								</TouchableHighlight>
+							</View>
+						</Drawer>
 					</Drawer>
 				</View>
 			);
