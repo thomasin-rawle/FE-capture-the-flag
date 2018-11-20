@@ -62,7 +62,12 @@ export default class MainMap extends Component {
 					long: newLocation.coords.longitude,
 					loading: false
 				});
-				this.amINear();
+				if(this.amInsideRadius()){
+					this.amINear();
+				}
+				else{
+					this.generateFlag(this.state.username);
+				}
 			}
 		});
 	};
@@ -141,7 +146,12 @@ export default class MainMap extends Component {
 		this.setState({
 			nearFlag: near
 		});
-  };
+	};
+	amInsideRadius = () => {
+		let inside = false;
+			inside = geolib.isPointInCircle({ latitude: this.state.lat, longitude: this.state.long }, { latitude: this.state.flagLat, longitude: this.state.flagLong }, 500);
+		return inside;
+	}
   handleRecenter = () => {
     this.map.animateToRegion(this.userLocationWithDelta(), 500);
   };
