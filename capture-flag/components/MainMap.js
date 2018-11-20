@@ -3,13 +3,13 @@ import { Platform, Text, View, StyleSheet, Dimensions, TouchableHighlight, Alert
 import { Constants, Location, Permissions, MapView } from 'expo';
 import randomLocation from 'random-location';
 import { FontAwesome } from '@expo/vector-icons';
-import {Drawer} from 'native-base';
+import { Drawer } from 'native-base';
 import geolib from 'geolib';
 import * as api from '../api';
 import Flag from './Flag';
-import HeaderBar from './HeaderBar'
-import SideBar from './SideBar'
-import {YellowBox} from 'react-native'
+import HeaderBar from './HeaderBar';
+import SideBar from './SideBar';
+import { YellowBox } from 'react-native';
 YellowBox.ignoreWarnings(['Require cycle:']);
 
 export default class MainMap extends Component {
@@ -58,19 +58,20 @@ export default class MainMap extends Component {
 				errorMessage: 'Permission to access location was denied'
 			});
 		}
-		Location.watchPositionAsync({ distanceInterval: 5 }, newLocation => {
-			if (this.state.lat !== newLocation.coords.latitude) {
-				this.setState({
-					lat: newLocation.coords.latitude,
-					long: newLocation.coords.longitude,
-					loading: false
-				});
-				this.amINear();
-				if (this.state.flagCaptured) {
-					this.dropFlag();
-				}
+		this.newLocation = await Location.watchPositionAsync({ distanceInterval: 5 }, this.locationChanged);
+	};
+	locationChanged = location => {
+		if (this.state.lat !== location.coords.latitude) {
+			this.setState({
+				lat: location.coords.latitude,
+				long: location.coords.longitude,
+				loading: false
+			});
+			this.amINear();
+			if (this.state.flagCaptured) {
+				this.dropFlag();
 			}
-		});
+		}
 	};
 	generateFlag = username => {
 		const flagCoordinate = {
@@ -144,32 +145,32 @@ export default class MainMap extends Component {
 			nearFlag: flag,
 			nearZone: zone
 		});
-  };
-  logOutUser = () => {
-    AsyncStorage.removeItem('mainUser')
-    this.props.navigation.navigate('Login')
-  }
-  handleRecenter = () => {
-    this.map.animateToRegion(this.userLocationWithDelta(), 500);
-  };
-  closeDrawer = () => {
-    this.drawer._root.close()
-  };
-  openDrawer = () => {
-    this.drawer._root.open()
-  };
-  userLocationWithDelta = () => {
-    const {lat, long} = this.state
-    const screen = Dimensions.get('window');
-    const ASPECT_RATIO = screen.width / screen.height;
-    const latitudeDelta = 0.005;
-    const longitudeDelta = latitudeDelta * ASPECT_RATIO;
-    const userLocation = { latitude: lat, longitude: long, latitudeDelta, longitudeDelta };
-    return userLocation
-}
+	};
+	logOutUser = () => {
+		this.newLocation.remove();
+		AsyncStorage.removeItem('mainUser');
+		this.props.navigation.navigate('Login');
+	};
+	handleRecenter = () => {
+		this.map.animateToRegion(this.userLocationWithDelta(), 500);
+	};
+	closeDrawer = () => {
+		this.drawer._root.close();
+	};
+	openDrawer = () => {
+		this.drawer._root.open();
+	};
+	userLocationWithDelta = () => {
+		const { lat, long } = this.state;
+		const screen = Dimensions.get('window');
+		const ASPECT_RATIO = screen.width / screen.height;
+		const latitudeDelta = 0.005;
+		const longitudeDelta = latitudeDelta * ASPECT_RATIO;
+		const userLocation = { latitude: lat, longitude: long, latitudeDelta, longitudeDelta };
+		return userLocation;
+	};
 
 	render() {
-		
 		console.log(this.state.flagLat, this.state.flagLong);
 		if (this.state.loading)
 			return (
@@ -181,31 +182,33 @@ export default class MainMap extends Component {
 			const { lat, long } = this.state;
 			return (
 				<View style={{ flex: 1 }}>
-				<Drawer
-                ref={(ref) => { this.drawer = ref; }}
-                content={<SideBar logOut={this.logOutUser}/>}
-                onClose={() => this.closeDrawer()} >
-				<HeaderBar openDrawer={this.openDrawer.bind(this)} score={this.state.score}/>
-				
-					<MapView
-						ref={map => {
-							this.map = map;
+					<Drawer
+						ref={ref => {
+							this.drawer = ref;
 						}}
-						style={{ flex: 1 }}
-						initialRegion={this.userLocationWithDelta()}
-						title={'capture flag'}
-						showsUserLocation={true}
-						followUserLocation={true}
+						content={<SideBar logOut={this.logOutUser} />}
+						onClose={() => this.closeDrawer()}
 					>
-						{/* FLAG COMPONENT */}
-						{!this.state.flagCaptured && <Flag captureFlag={this.captureFlag} nearFlag={this.state.nearFlag} flagLat={this.state.flagLat} flagLong={this.state.flagLong} />}
-						{this.state.flagCaptured && <MapView.Circle center={{ latitude: this.state.zoneLat, longitude: this.state.zoneLong }} radius={20} fillColor="rgba(0, 255, 0, 0.3)" />}
-					</MapView>
-				<TouchableHighlight onPress={this.handleRecenter} underlayColor={'#ececec'} style={styles.recenterBtn}>
-					<FontAwesome  name="bullseye" size={40} color="#00bbff" />
-				</TouchableHighlight>
-				</Drawer>
+						<HeaderBar openDrawer={this.openDrawer.bind(this)} score={this.state.score} />
 
+						<MapView
+							ref={map => {
+								this.map = map;
+							}}
+							style={{ flex: 1 }}
+							initialRegion={this.userLocationWithDelta()}
+							title={'capture flag'}
+							showsUserLocation={true}
+							followUserLocation={true}
+						>
+							{/* FLAG COMPONENT */}
+							{!this.state.flagCaptured && <Flag captureFlag={this.captureFlag} nearFlag={this.state.nearFlag} flagLat={this.state.flagLat} flagLong={this.state.flagLong} />}
+							{this.state.flagCaptured && <MapView.Circle center={{ latitude: this.state.zoneLat, longitude: this.state.zoneLong }} radius={20} fillColor="rgba(0, 255, 0, 0.3)" />}
+						</MapView>
+						<TouchableHighlight onPress={this.handleRecenter} underlayColor={'#ececec'} style={styles.recenterBtn}>
+							<FontAwesome name="bullseye" size={40} color="#00bbff" />
+						</TouchableHighlight>
+					</Drawer>
 				</View>
 			);
 		}
