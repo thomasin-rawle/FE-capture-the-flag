@@ -31,18 +31,24 @@ export default class MainMap extends Component {
 	};
 	componentWillMount() {
 		console.log('mounting');
-		if (Platform.OS === 'android' && !Constants.isDevice) {
-			this.setState({
-				errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
-			});
-		} else {
-			this._getLocationAsync()
-				.then(() => AsyncStorage.getItem('mainUser'))
-				.then(userObj => {
-					const newMainObj = JSON.parse(userObj);
-					return api.getUser(newMainObj.username).then(user => this.setState({ ...user }));
-				});
-		}
+		Expo.Font.loadAsync({
+			'Roboto': require('native-base/Fonts/Roboto.ttf'),
+			'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+		  })
+		  .then(() => {
+			  if (Platform.OS === 'android' && !Constants.isDevice) {
+				  this.setState({
+					  errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!'
+				  });
+			  } else {
+				  this._getLocationAsync()
+					  .then(() => AsyncStorage.getItem('mainUser'))
+					  .then(userObj => {
+						  const newMainObj = JSON.parse(userObj);
+						  return api.getUser(newMainObj.username).then(user => this.setState({ ...user }));
+					  });
+			  }
+		  })
 	}
 	componentDidUpdate(prevProps, prevState) {
 		if (prevState.lat !== this.state.lat && prevState.long !== this.state.long) {
