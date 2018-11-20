@@ -28,11 +28,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         paddingHorizontal:10,
     },
-	// keyboard: {
-	// 	margin: 20,
-	// 	padding: 20,
-	// 	alignSelf: 'stretch'
-    // },
     loginBtnContainer: {
         display: 'flex',
         alignItems:"center",
@@ -58,6 +53,12 @@ const styles = StyleSheet.create({
         color:'#fff',
         fontSize:18,
     },
+    backBtn: {
+        position: 'absolute',
+        top: 60,
+        left:40,
+        zIndex: 100
+    }
 
 })
 

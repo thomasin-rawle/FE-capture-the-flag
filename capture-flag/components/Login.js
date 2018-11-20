@@ -3,7 +3,7 @@ import {
 	AppRegistry,
 	Button,
 	KeyboardAvoidingView,
-	TouchableOpacity,
+	TouchableHighlight,
 	AsyncStorage,
 	Image,
 	TextInput,
@@ -43,8 +43,8 @@ export default class Login extends Component {
 
 	render() {
 		return (
-				<KeyboardAvoidingView style={styles.loginContainer} behavior="padding" keyboardVerticalOffset={20} enabled>
-				
+				<KeyboardAvoidingView style={styles.loginContainer} behavior="padding" enabled>
+
 					<View style={styles.logoLoginContainer}>
 						<Image style={styles.logoLogin} source={require('../assets/logo-login.png')} />
 					</View>
@@ -66,18 +66,18 @@ export default class Login extends Component {
 								{this.state.error && <View><Text style={{ textAlign: 'center', color: '#ffffff', position: 'absolute', bottom: -40, left: -20, width:280 }}>Incorrect user details, please try again</Text></View>}
 						</View>
 						<View style={styles.loginBtnContainer}>
-							<TouchableOpacity style={styles.loginBtn}>
+							<TouchableHighlight style={styles.loginBtn}>
 								<Text onPress={() => this.loginUser(this.state)} title="Log In" style={styles.loginBtnText}>
 									Log In
 								</Text>
-							</TouchableOpacity>
+							</TouchableHighlight>
 						</View>
 				<View>
-					<TouchableOpacity style={styles.signupBtn}>
+					<TouchableHighlight style={styles.signupBtn}>
 						<Text style={styles.signupBtnText} onPress={() => this.props.navigation.navigate('Register')} title="Sign up">
 							Create an Account
 						</Text>
-					</TouchableOpacity>
+					</TouchableHighlight>
 				</View>
 				
 				{/* <TouchableOpacity style={styles.button}>
