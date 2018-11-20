@@ -7,12 +7,12 @@ import {
 	AsyncStorage,
 	Image,
 	TextInput,
-	StyleSheet, // CSS-like styles
 	Text, // Renders text
 	View // Container component
 } from 'react-native';
 
 import * as api from '../api';
+import styles from '../assets/style/loginStyle'
 
 export default class Login extends Component {
 	state = {
@@ -43,15 +43,13 @@ export default class Login extends Component {
 
 	render() {
 		return (
-			<View style={styles.container}>
-				<View behavior="padding" style={styles.container}>
-					<View style={styles.logoContainer}>
-						<Text style={styles.subtext}>FlagLand</Text>
+				<KeyboardAvoidingView style={styles.loginContainer} behavior="padding" keyboardVerticalOffset={20} enabled>
+				
+					<View style={styles.logoLoginContainer}>
+						<Image style={styles.logoLogin} source={require('../assets/logo-login.png')} />
 					</View>
-					{this.state.error && <Text style={{ textAlign: 'center', color: '#ffffff' }}>Incorrect user details, please try again</Text>}
-					<KeyboardAvoidingView style={styles.keyboard}>
-						<View style={styles.window}>
-							<TextInput
+						<View style={styles.loginInputContainer}>
+							<TextInput style={styles.loginInput}
 								placeholder="Username"
 								placeholderTextColor="rgba(255,255,255,0.7)"
 								returnKeyType="next"
@@ -61,33 +59,37 @@ export default class Login extends Component {
 								autoCorrect={false}
 								value={this.state.username}
 								onChangeText={username => this.setState({ username })}
-							/>
+								/>
 						</View>
-						<View style={styles.window}>
-							<TextInput placeholder="Password" placeholderTextColor="rgba(255,255,255,0.7)" returnKeyType="go" secureTextEntry ref={input => (this.passwordInput = input)} value={this.state.password} onChangeText={password => this.setState({ password })} />
+						<View style={styles.loginInputContainer}>
+							<TextInput style={styles.loginInput} placeholder="Password" placeholderTextColor="rgba(255,255,255,0.7)" returnKeyType="go" secureTextEntry ref={input => (this.passwordInput = input)} value={this.state.password} onChangeText={password => this.setState({ password })} />
+								{this.state.error && <View><Text style={{ textAlign: 'center', color: '#ffffff', position: 'absolute', bottom: -40, left: -20, width:280 }}>Incorrect user details, please try again</Text></View>}
 						</View>
-						<TouchableOpacity style={styles.buttonContainer}>
-							<Text onPress={() => this.loginUser(this.state)} title="LOGIN" style={styles.buttonText}>
-								LOGIN
-							</Text>
-						</TouchableOpacity>
-					</KeyboardAvoidingView>
+						<View style={styles.loginBtnContainer}>
+							<TouchableOpacity style={styles.loginBtn}>
+								<Text onPress={() => this.loginUser(this.state)} title="Log In" style={styles.loginBtnText}>
+									Log In
+								</Text>
+							</TouchableOpacity>
+						</View>
+				<View>
+					<TouchableOpacity style={styles.signupBtn}>
+						<Text style={styles.signupBtnText} onPress={() => this.props.navigation.navigate('Register')} title="Sign up">
+							Create an Account
+						</Text>
+					</TouchableOpacity>
 				</View>
-				<TouchableOpacity style={styles.button}>
-					<Text style={styles.buttonText} onPress={() => this.props.navigation.navigate('Register')} title="Sign up">
-						Sign up
-					</Text>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.button}>
+				
+				{/* <TouchableOpacity style={styles.button}>
 					<Text
 						style={styles.buttonText}
 						// onPress={() => this.props.navigation.navigate("ForgetPassword")}
 						title="Forget Password"
 					>
-						Forget Password
+						Forgotten Password
 					</Text>
-				</TouchableOpacity>
-			</View>
+				</TouchableOpacity> */}
+				</KeyboardAvoidingView>
 		);
 	}
 
@@ -102,51 +104,5 @@ export default class Login extends Component {
 	// })
 	//   }
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#16a085'
-	},
-	logoContainer: {
-		alignItems: 'center',
-		flexGrow: 1,
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	logo: {
-		width: 200,
-		height: 150
-	},
-	subtext: {
-		color: '#ffffff',
-		marginTop: 10,
-		width: 260,
-		textAlign: 'center',
-		opacity: 0.8,
-		fontSize: 40
-	},
-	keyboard: {
-		margin: 20,
-		padding: 20,
-		alignSelf: 'stretch'
-	},
-	buttonContainer: {
-		backgroundColor: 'rgba(255,255,255,0.2)',
-		paddingVertical: 15
-	},
-	buttonText: {
-		textAlign: 'center',
-		color: '#FFF',
-		fontWeight: '700'
-	},
-	button: {
-		backgroundColor: '#27ae60',
-		paddingVertical: 15
-	},
-	window: {
-		marginBottom: 15
-	}
-});
 
 AppRegistry.registerComponent('Login', () => Login);
