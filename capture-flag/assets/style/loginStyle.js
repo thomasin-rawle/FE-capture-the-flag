@@ -55,11 +55,10 @@ const styles = StyleSheet.create({
     },
     backBtn: {
         position: 'absolute',
-        top: 60,
-        left:40,
+        top: 40,
+        left: 20,
         zIndex: 100
     }
-
 })
 
 export default styles

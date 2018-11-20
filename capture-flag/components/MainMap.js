@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Platform, Text, View, StyleSheet, Dimensions, TouchableHighlight, Alert, AsyncStorage } from 'react-native';
+import { Platform, Text, View, StyleSheet, Dimensions, TouchableHighlight, Alert, AsyncStorage, Image, ActivityIndicator, ActivityIndicatorIOS  } from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import randomLocation from 'random-location';
 import { FontAwesome } from '@expo/vector-icons';
+import styles from '../assets/style/mainStyle'
 import { Drawer } from 'native-base';
 import geolib from 'geolib';
 import * as api from '../api';
@@ -68,11 +69,13 @@ export default class MainMap extends Component {
 	};
 	locationChanged = location => {
 		if (this.state.lat !== location.coords.latitude) {
+			
 			this.setState({
 				lat: location.coords.latitude,
 				long: location.coords.longitude,
 				loading: false
 			});
+		
 			if(this.amInsideRadius()){
 					this.amINear();
 			}
@@ -192,8 +195,8 @@ export default class MainMap extends Component {
 		console.log(this.state.zoneLat, this.state.zoneLong);
 		if (this.state.loading)
 			return (
-				<View style={styles.loading}>
-					<Text>Loading...</Text>
+				<View style={styles.loadingScreen}>
+					<ActivityIndicator size='large' color="#ffffff" />
 				</View>
 			);
 		else {
@@ -224,7 +227,7 @@ export default class MainMap extends Component {
 							{this.state.flagCaptured && <MapView.Circle center={{ latitude: this.state.zoneLat, longitude: this.state.zoneLong }} radius={20} fillColor="rgba(0, 255, 0, 0.3)" />}
 						</MapView>
 						<TouchableHighlight onPress={this.handleRecenter} underlayColor={'#ececec'} style={styles.recenterBtn}>
-							<FontAwesome name="bullseye" size={40} color="#00bbff" />
+							<FontAwesome name="bullseye" size={40} color="#1CBF8E" />
 						</TouchableHighlight>
 					</Drawer>
 				</View>
@@ -232,28 +235,4 @@ export default class MainMap extends Component {
 		}
 	}
 }
-const styles = StyleSheet.create({
-	loading: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
-		paddingTop: Constants.statusBarHeight,
-		backgroundColor: '#ecf0f1'
-	},
-	recenterBtn: {
-		position: 'absolute',
-		bottom: 40,
-		right: 20,
-		backgroundColor: 'white',
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		borderRadius: 150,
-		width: 60,
-		height: 60,
-		shadowColor: '#333',
-		shadowOpacity: 0.4,
-		shadowOffset: { width: 4, height: 4 },
-		elevation: 5
-	}
-});
+
