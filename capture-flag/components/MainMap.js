@@ -59,19 +59,6 @@ export default class MainMap extends Component {
 			});
 		}
 		this.newLocation = await Location.watchPositionAsync({ distanceInterval: 5 }, this.locationChanged);
-		// const location = await Location.watchPositionAsync({ distanceInterval: 5 }, newLocation => {
-		// 	if (this.state.lat !== newLocation.coords.latitude) {
-		// 		this.setState({
-		// 			lat: newLocation.coords.latitude,
-		// 			long: newLocation.coords.longitude,
-		// 			loading: false
-		// 		});
-		// 		this.amINear();
-		// 		if (this.state.flagCaptured) {
-		// 			this.dropFlag();
-		// 		}
-		// 	}
-		// });
 	};
 	locationChanged = location => {
 		if (this.state.lat !== location.coords.latitude) {
