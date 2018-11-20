@@ -64,7 +64,7 @@ export default class MainMap extends Component {
 				errorMessage: 'Permission to access location was denied'
 			});
 		}
-		this.newLocation = await Location.watchPositionAsync({ distanceInterval: 5 }, this.locationChanged);
+		this.newLocation = await Location.watchPositionAsync({ distanceInterval: 5 }, this.locationChanged)
 	};
 	locationChanged = location => {
 		if (this.state.lat !== location.coords.latitude) {
@@ -73,6 +73,7 @@ export default class MainMap extends Component {
 				long: location.coords.longitude,
 				loading: false
 			});
+			this.getDistanceFromFlag();
 			if(this.amInsideRadius()){
 					this.amINear();
 			}
@@ -157,7 +158,11 @@ export default class MainMap extends Component {
 			nearZone: zone
 		});
 	};
-
+getDistanceFromFlag = () => {
+	let distance = geolib.getDistance({ latitude: this.state.lat, longitude: this.state.long }, { latitude: this.state.flagLat, longitude: this.state.flagLong },null,1);
+	console.log(distance)
+return distance;
+}
 	amInsideRadius = () => {
 		let inOrOut = geolib.isPointInCircle({ latitude: this.state.lat, longitude: this.state.long }, { latitude: this.state.flagLat, longitude: this.state.flagLong }, 500); //false means outside radius
 		return inOrOut;
@@ -194,8 +199,8 @@ export default class MainMap extends Component {
 	};
 
 	render() {
-		// console.log(this.state.flagLat, this.state.flagLong);
-		console.log(this.state.zoneLat, this.state.zoneLong);
+		console.log(this.state.flagLat,"flaglat inside render");
+		this.getDistanceFromFlag()
 		if (this.state.loading)
 			return (
 				<View style={styles.loading}>
