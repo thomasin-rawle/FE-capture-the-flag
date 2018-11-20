@@ -1,0 +1,36 @@
+{
+  "name": "FE-capture-the-flag",
+  "description": "Front-end repo for capture the flag game",
+  "main": "node_modules/expo/AppEntry.js",
+  "private": true,
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tommyrawle/FE-capture-the-flag.git"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "es6-promise": "^4.2.5",
+    "expo": "^31.0.2",
+    "frisbee": "^2.0.5",
+    "geolib": "^2.0.24",
+    "native-base": "^2.8.1",
+    "random-location": "^1.0.12",
+    "react": "16.5.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
+    "react-navigation": "^2.18.2"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "^5.0.0"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tommyrawle/FE-capture-the-flag/issues"
+  },
+  "homepage": "https://github.com/tommyrawle/FE-capture-the-flag#readme"
+}
