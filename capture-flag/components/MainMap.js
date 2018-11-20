@@ -73,7 +73,12 @@ export default class MainMap extends Component {
 				long: location.coords.longitude,
 				loading: false
 			});
-			this.amINear();
+			if(this.amInsideRadius()){
+					this.amINear();
+			}
+			else {
+				this.generateFlag(this.state.username);
+			}
 			if (this.state.flagCaptured) {
 				this.dropFlag();
 			}
@@ -152,6 +157,12 @@ export default class MainMap extends Component {
 			nearZone: zone
 		});
 	};
+
+	amInsideRadius = () => {
+		let inOrOut = geolib.isPointInCircle({ latitude: this.state.lat, longitude: this.state.long }, { latitude: this.state.flagLat, longitude: this.state.flagLong }, 500); //false means outside radius
+		return inOrOut;
+	};
+
 	logOutUser = () => {
 		this.newLocation.remove();
 		AsyncStorage.removeItem('mainUser');
@@ -177,7 +188,8 @@ export default class MainMap extends Component {
 	};
 
 	render() {
-		console.log(this.state.flagLat, this.state.flagLong);
+		// console.log(this.state.flagLat, this.state.flagLong);
+		console.log(this.state.zoneLat, this.state.zoneLong);
 		if (this.state.loading)
 			return (
 				<View style={styles.loading}>

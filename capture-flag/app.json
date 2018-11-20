@@ -1,11 +1,14 @@
 {
   "expo": {
-    "name": "capture-flag",
-    "description": "This project is really great.",
-    "slug": "capture-flag",
+    "name": "FlagLand",
+    "description": "A geo-location app game, built in React-Native, where the user has to collect  flags  and drop them off in specified zones to receive points. The flags and the drop off zones are both randomly generated based on the user’s current location.",
+    "slug": "flagland",
     "privacy": "public",
     "sdkVersion": "31.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
