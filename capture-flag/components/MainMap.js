@@ -7,7 +7,8 @@ import {
   Dimensions,
   TouchableHighlight,
   Alert,
-  AsyncStorage
+  AsyncStorage,
+  ActivityIndicator
 } from "react-native";
 import { Constants, Location, Permissions, MapView } from "expo";
 import randomLocation from "random-location";
@@ -20,6 +21,7 @@ import HeaderBar from "./HeaderBar";
 import SideBar from "./SideBar";
 import Scoreboard from "./Scoreboard";
 import { YellowBox } from "react-native";
+import styles from '../assets/style/mainStyle'
 YellowBox.ignoreWarnings(["Require cycle:"]);
 
 export default class MainMap extends Component {
@@ -276,7 +278,7 @@ export default class MainMap extends Component {
       </View>
       );
     else {
-      const { lat, long } = this.state;
+      const { name, username, score } = this.state;
       return (
         <View style={{ flex: 1 }}>
           <Drawer
@@ -287,6 +289,7 @@ export default class MainMap extends Component {
               <SideBar
                 logOut={this.logOutUser}
                 getDistanceFromFlag={this.getDistanceFromFlag}
+                score={score} name={name} username={username}
               />
             }
             side="left"

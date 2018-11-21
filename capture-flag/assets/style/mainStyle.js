@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
       userDrawerContainer: {
         backgroundColor:'#FFFFFF', 
         paddingTop:70,
-        paddingHorizontal: 30,
+        paddingHorizontal: 20,
        
       },
       logOutButtonContainer: {
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
         marginVertical: 30
       },
       statsContainer: {
-        paddingLeft: 5
+        
       },
       drawerStatItem: {
         flexDirection: 'row',
@@ -138,8 +138,8 @@ const styles = StyleSheet.create({
       drawerItemIcon: {
         alignItems: 'center',
         justifyContent:'flex-end',
-        width: 40,
-        height:40,
+        width: 36,
+        height:36,
         marginRight: 10,
       },
       drawerItemStat: {
