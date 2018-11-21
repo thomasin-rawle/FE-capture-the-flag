@@ -144,7 +144,6 @@ const styles = StyleSheet.create({
       },
       drawerItemStat: {
         marginLeft: 10,
-        
       }
       
 })
