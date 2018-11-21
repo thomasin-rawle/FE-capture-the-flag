@@ -16,7 +16,7 @@ export default class Sidebar extends Component {
   };
 
   render() {
-    const { getDistanceFromFlag, score, name, username } = this.props;
+    const { getDistanceFromFlag, score, name, username, dropFlagCount } = this.props;
     return (
       <Content style={styles.userDrawerContainer} contentContainerStyle={{
         flex: 1
@@ -45,7 +45,7 @@ export default class Sidebar extends Component {
           <View style={styles.drawerStatItem}>
             <View style={styles.drawerItemIcon}><Image style={{width:30, height:30}} source={flagsCounted}/></View>
             <View><Text style={styles.drawerStat}>Flags Captured</Text></View>
-            <View style={styles.drawerItemStat}><Text style={[styles.drawerStat, {fontWeight: 'bold'}]}>{score / 5}</Text></View>
+            <View style={styles.drawerItemStat}><Text style={[styles.drawerStat, {fontWeight: 'bold'}]}>{dropFlagCount}</Text></View>
           </View>
          
         </View>
