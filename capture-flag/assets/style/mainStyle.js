@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 
+
 const styles = StyleSheet.create({
     loadingScreen: {
 		flex: 1,
@@ -26,6 +27,9 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.4,
 		shadowOffset: { width: 4, height: 4 },
 		elevation: 5
+    },
+    recenterBtnIcon: {
+      color: '#1CBF8E'
     },
     topBar: {
         backgroundColor: '#1CBF8E',
@@ -59,6 +63,85 @@ const styles = StyleSheet.create({
         fontSize: 20,
         paddingLeft: 5
       },
+      // drawerContainer: {
+      //   display:'flex',
+      //   justifyContent:'center',
+      //   alignItems:'center',
+      //   padding: 20
+      // },
+      drawerItem: {
+        fontSize:20,
+        color: '#616161'
+      },
+      userDrawerContainer: {
+        backgroundColor:'#FFFFFF', 
+        paddingTop:70,
+        paddingHorizontal: 30,
+       
+      },
+      logOutButtonContainer: {
+          alignItems:'center',
+          flex: 1,
+          justifyContent:'flex-end',
+      },
+      logOutButton: {
+          padding: 10,
+          borderRadius: 10,
+          width: 150,
+          backgroundColor: '#1CBF8E',
+          alignItems: 'center',
+          marginTop: 20,
+          bottom:50
+      },
+      profilePicContainer:{
+        width:70,
+        height:70,
+        borderRadius:100,
+        overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      profilePic: {
+        maxWidth: 70,
+        resizeMode: 'contain'
+      },
+      namesContainer: {
+        marginTop: 20,
+        paddingLeft:5
+      },
+      name: {
+        fontWeight: 'bold',
+        fontSize: 24,
+        marginBottom: 5
+      },
+      drawerLine: {
+        borderBottomColor: '#E4E4E4',
+        borderBottomWidth: 2,
+        marginVertical: 30
+      },
+      statsContainer: {
+        paddingLeft: 5
+      },
+      drawerStatItem: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'flex-start',
+        marginVertical: 15
+      },
+      drawerStat: {
+        color: '#616161',
+        fontSize:24
+      },
+      drawerItemIcon: {
+        alignItems: 'center',
+        width: 40,
+        marginRight: 10,
+        
+      },
+      drawerItemStat: {
+        marginLeft: 10,
+        
+      }
       
 })
 

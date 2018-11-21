@@ -227,7 +227,7 @@ export default class MainMap extends Component {
 							{this.state.flagCaptured && <MapView.Circle center={{ latitude: this.state.zoneLat, longitude: this.state.zoneLong }} radius={20} fillColor="rgba(0, 255, 0, 0.3)" />}
 						</MapView>
 						<TouchableHighlight onPress={this.handleRecenter} underlayColor={'#ececec'} style={styles.recenterBtn}>
-							<FontAwesome name="bullseye" size={40} color="#1CBF8E" />
+							<FontAwesome name="bullseye" size={40} style={styles.recenterBtnIcon} />
 						</TouchableHighlight>
 					</Drawer>
 				</View>

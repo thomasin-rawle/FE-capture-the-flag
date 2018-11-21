@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
-import {Text, AsyncStorage, TouchableHighlight, StyleSheet} from 'react-native';
+import {Text, View, AsyncStorage, TouchableHighlight, Image} from 'react-native';
 import {Content} from 'native-base';
 // import * as api from '../api'
+import styles from '../assets/style/mainStyle'
+import profilePic from '../assets/profilePic.png'
+import { FontAwesome } from '@expo/vector-icons';
+import flagsCounted from '../assets/flags-counted-icon.png'
 
 export default class Sidebar extends Component {
 
@@ -29,36 +33,50 @@ export default class Sidebar extends Component {
   render() {
     const {name, username, score} = this.state
     return (
-      <Content style={{backgroundColor:'#FFFFFF', paddingTop:90}}>
-         <Text style={styles.drawerItem}>{name}</Text>
-         <Text style={styles.drawerItem}>{username}</Text>
-         <Text style={styles.drawerItem}>Score: {score}</Text>
-         <TouchableHighlight onPress={() => this.props.logOut()} style={styles.logOutButton} >
-           <Text style={{color: 'white', fontSize:20}}>Log Out</Text>
-         </TouchableHighlight>
+      <Content style={styles.userDrawerContainer} contentContainerStyle={{
+        flex: 1
+      }}>
+      <View style={styles.profilePicContainer}>
+        <Image style={styles.profilePic} source={profilePic}/>
+      </View>
+      <View style={styles.namesContainer}>
+      <Text style={[styles.drawerItem, styles.name]}>{name}</Text>
+      <Text style={styles.drawerItem}>@{username}</Text>
+      </View>
+
+        <View style={styles.drawerLine}></View>
+
+        <View style={styles.statsContainer}>
+          <View style={styles.drawerStatItem}>
+            <View style={styles.drawerItemIcon}><FontAwesome name="trophy" size={36} color="#616161" /></View>
+            <View><Text style={styles.drawerStat}>Score</Text></View>
+            <View style={styles.drawerItemStat}><Text style={[styles.drawerStat, {fontWeight: 'bold'}]}>{score}</Text></View>
+          </View>
+          <View style={styles.drawerStatItem}>
+            <View style={styles.drawerItemIcon}><FontAwesome name="map-marker" size={36} color="#616161" /></View>
+            <View><Text style={styles.drawerStat}>Flag Distance</Text></View>
+            <View style={styles.drawerItemStat}><Text style={[styles.drawerStat, {fontWeight: 'bold'}]}>{score}</Text></View>
+          </View>
+          <View style={styles.drawerStatItem}>
+            <View style={styles.drawerItemIcon}><Image style={{width:30, height:30}} source={flagsCounted}/></View>
+            <View><Text style={styles.drawerStat}>Flags Captured</Text></View>
+            <View style={styles.drawerItemStat}><Text style={[styles.drawerStat, {fontWeight: 'bold'}]}>{score / 5}</Text></View>
+          </View>
+         
+        </View>
+
+         <View style={styles.logOutButtonContainer}>
+          <TouchableHighlight onPress={() => this.props.logOut()} style={styles.logOutButton} >
+            <Text style={{color: 'white', fontSize:20}}>Log Out</Text>
+          </TouchableHighlight>
+         </View>
       </Content>
     );
   }
 }
-const styles = StyleSheet.create({
-  drawerContainer: {
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'center',
-    padding: 20
-  },
-  drawerItem: {
-    fontSize:20,
-  },
-  logOutButton: {
-      backgroundColor: 'blue',
-      padding: 10,
-      borderRadius: 20,
-      width: 150,
-      backgroundColor: '#00bbff',
-      alignItems: 'center',
-      marginTop: 20
-  }
-})
+// const styles = StyleSheet.create({
+  
+
+// })
 
 module.exports = Sidebar;
