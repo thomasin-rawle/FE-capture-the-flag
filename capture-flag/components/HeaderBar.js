@@ -14,7 +14,7 @@ import {
 class HeaderBar extends Component {
   render() {
     return (
-      <Header style={styles.topBar}>
+      <View style={styles.topBar} >
         <Left style={styles.user}>
         <TouchableWithoutFeedback onPress={() => this.props.openUserDrawer()} >
         <View style={styles.headerPicContainer}>
@@ -26,10 +26,10 @@ class HeaderBar extends Component {
           <Image style={styles.logoLong} source={logoLong}/>
         </Body>
         <Right style={styles.score}>
-				<FontAwesome onPress={() => this.props.openScoreDrawer()} name="trophy" size={30} color="white" />
+				  <FontAwesome onPress={() => this.props.openScoreDrawer()} name="trophy" size={30} color="white" />
           <Text style={styles.scoreNumber}>{this.props.score}</Text>
         </Right>
-      </Header>
+      </View>
     );
   }
 }

@@ -3,6 +3,7 @@ import { Text, AsyncStorage, TouchableHighlight, StyleSheet, Image, View } from 
 import Leaderboard from 'react-native-leaderboard';
 import { Content } from 'native-base';
 import * as api from '../api';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default class Scoreboard extends Component {
 	state = {
@@ -29,8 +30,11 @@ export default class Scoreboard extends Component {
 	};
 	render() {
 		return (
-			<Content style={{ backgroundColor: '#FFFFFF', paddingTop: 90 }}>
-				<Text style={styles.title}>Leaderboard</Text>
+			<Content style={{ backgroundColor: '#FFFFFF'}}>
+			<View style={styles.leaderboardHeader}>
+				<FontAwesome name="trophy" size={40} color="#FFC200" />
+				<Text style={styles.leaderboardTitle}>Leaderboard</Text>
+			</View>
 				<Leaderboard style={styles.leaderboard} data={this.state.data} sortBy="score" labelBy="username" />
 			</Content>
 		);
@@ -42,14 +46,20 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		padding: 20,
-		marginTop: 50
 	},
-	title: {
-		padding: 30,
-		alignItems: 'center',
+	leaderboardHeader: {
+		paddingTop: 50,
+		paddingBottom: 20,
+		textAlign: 'center',
 		justifyContent: 'center',
-		backgroundColor: '#00bbff',
-		fontSize: 20
+		alignItems: 'center'
+	},
+	leaderboardTitle: {
+		paddingTop:10,
+		textAlign: 'center',
+		fontSize: 20,
+		
+		color:'#616161'
 	},
 	userInfo: {
 		display: 'flex',

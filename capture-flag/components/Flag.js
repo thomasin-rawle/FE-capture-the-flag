@@ -15,7 +15,7 @@ const Flag = props => {
 					latitude: props.flagLat,
 					longitude: props.flagLong
 				}}
-				title={'random Flag'}
+				
 			/>
 		</View>
 	);

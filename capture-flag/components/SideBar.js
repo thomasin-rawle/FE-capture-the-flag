@@ -33,7 +33,7 @@ export default class Sidebar extends Component {
 
         <View style={styles.statsContainer}>
           <View style={styles.drawerStatItem}>
-            <View style={styles.drawerItemIcon}><FontAwesome name="trophy" size={34} color="#616161" /></View>
+            <View style={styles.drawerItemIcon}><FontAwesome name="trophy" size={30} color="#616161" /></View>
             <View><Text style={styles.drawerStat}>Score</Text></View>
             <View style={styles.drawerItemStat}><Text style={[styles.drawerStat, {fontWeight: 'bold'}]}>{score}</Text></View>
           </View>

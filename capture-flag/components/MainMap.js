@@ -23,6 +23,7 @@ import Scoreboard from "./Scoreboard";
 import { YellowBox } from "react-native";
 import styles from '../assets/style/mainStyle'
 YellowBox.ignoreWarnings(["Require cycle:"]);
+Drawer.defaultProps.styles.mainOverlay.elevation = 0;
 
 export default class MainMap extends Component {
   state = {

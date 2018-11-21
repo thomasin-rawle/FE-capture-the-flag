@@ -33,25 +33,30 @@ const styles = StyleSheet.create({
     },
     topBar: {
         backgroundColor: '#1CBF8E',
-        height:80,
+        paddingTop:35,
+        flexDirection: 'row',
+        alignItems: 'flex-end'
+        
       },
       user: {
-        alignItems: 'flex-start',
-        paddingLeft:20
+        paddingLeft:20,
+        flex:1,
+        paddingBottom: 10
       },
       logo: {
-        alignItems: 'center',
+        flex:1
       },
       logoLong: {
         width: 100,
-        height:50,
+        height:40,
         resizeMode: 'contain',
     },
       score: {
-        flex:1,
         color: 'white',
-        alignItems: 'flex-end',
+        flexDirection: 'row',
+        flex: 1,
         justifyContent: 'flex-end',
+        alignItems: 'flex-end',
         paddingRight:20
       },
       scoreNumber: {
@@ -114,16 +119,13 @@ const styles = StyleSheet.create({
       },
       name: {
         fontWeight: 'bold',
-        fontSize: 24,
+        fontSize: 20,
         marginBottom: 5
       },
       drawerLine: {
         borderBottomColor: '#E4E4E4',
         borderBottomWidth: 2,
         marginVertical: 30
-      },
-      statsContainer: {
-        
       },
       drawerStatItem: {
         flexDirection: 'row',
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
       },
       drawerStat: {
         color: '#616161',
-        fontSize:22
+        fontSize:18
       },
       drawerItemIcon: {
         alignItems: 'center',
