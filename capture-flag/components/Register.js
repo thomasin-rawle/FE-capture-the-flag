@@ -20,7 +20,8 @@ export default class Register extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			error: false
+      error: false,
+      password: ''
 		};
 	}
 
@@ -74,7 +75,8 @@ export default class Register extends Component {
 		}
 		score += (count - 1) * 10;
 		return Math.round(score);
-	};
+  };
+  
 	passwordStyle = password => {
 		const score = this.passwordStrength(password);
 		if (!score) return styles.input;
@@ -82,7 +84,6 @@ export default class Register extends Component {
 	};
 
   render() {
-    // const text = this.state.nameExist ? 'Username already exists, please try again' : null
     return (
       <KeyboardAvoidingView style={styles.loginContainer} behavior="padding" enabled>
       <TouchableOpacity style={styles.backBtn} onPress={() => this.props.navigation.goBack()}>
@@ -117,6 +118,7 @@ export default class Register extends Component {
           />
           </View>
           <View style={styles.loginInputContainer}>
+
           <TextInput style={styles.loginInput}
             value={this.state.password}
             onChangeText={password => this.setState({ password })}
@@ -129,6 +131,10 @@ export default class Register extends Component {
             secureTextEntry
           />
           </View>
+          <View>
+            {this.state.password.length > 0 && 
+            <Text style={this.passwordStyle(this.state.password)}>Password strength</Text>}
+          </View>
           <View style={styles.loginInputContainer}>
           <TextInput style={styles.loginInput}
             onChangeText={confirm => this.setState({ confirm })}
@@ -137,7 +143,6 @@ export default class Register extends Component {
             placeholderTextColor="rgba(255,255,255,0.7)"
             returnKeyType="go"
             secureTextEntry
-            // ref={input => (this.passwordInput = input)}
           />
           {this.state.error && 
         <View>

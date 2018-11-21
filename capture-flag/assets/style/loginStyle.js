@@ -58,7 +58,33 @@ const styles = StyleSheet.create({
         top: 40,
         left: 20,
         zIndex: 100
-    }
+    },
+    inputWeak: {
+        backgroundColor: 'red',
+        width: 240,
+        height: 25,
+        textAlign: "center",
+        fontSize: 20,
+        color: 'white'
+    },
+    inputMedium: {
+        backgroundColor: 'yellow',
+        width: 240,
+        height: 25,
+        textAlign: "center",
+        fontSize: 20,
+        color: 'black'
+    },
+    inputGood: {
+        backgroundColor: 'green',
+        width: 240,
+        height: 25,
+        textAlign: "center",
+        fontSize: 20,
+        color: 'white'
+    },
 })
 
 export default styles
+
+
