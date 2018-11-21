@@ -133,11 +133,11 @@ export default class MainMap extends Component {
     const zoneCoordinate = {
       latitude: randomLocation.randomCirclePoint(
         { latitude: this.state.flagLat, longitude: this.state.flagLong },
-        500
+        100
       ).latitude,
       longitude: randomLocation.randomCirclePoint(
         { latitude: this.state.flagLat, longitude: this.state.flagLong },
-        500
+        100
       ).longitude
     };
     api.patchZoneLocation(
@@ -169,7 +169,7 @@ export default class MainMap extends Component {
               this.generateZone(this.state.username);
               this.setState({
                 flagCaptured: true,
-                flagGenerated: false
+                
               });
             }
           },
@@ -187,7 +187,8 @@ export default class MainMap extends Component {
     if (this.state.nearZone) {
       this.incrementScore();
       this.setState({
-        flagCaptured: false
+        flagCaptured: false,
+        flagGenerated: false
       });
       this.generateFlag(this.state.username);
     }
