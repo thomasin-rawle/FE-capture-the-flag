@@ -20,17 +20,20 @@ export default class Login extends Component {
 	};
 
 	loginUser = user => {
+		console.log(user)
 		api
 			.getUserAfterLogin(user)
 			.then(user => {
-				const { name, score, username, flagCaptured, flagGenerated, flagLat, flagLong, zoneLat, zoneLong } = user;
-				const mainUser = { name, score, username, flagCaptured, flagGenerated, flagLat, flagLong, zoneLat, zoneLong };
+				const { name, score, username, flagCaptured, flagGenerated, flagLat, flagLong, zoneLat, zoneLong, nearZone, flagDistance, dropFlagCount } = user;
+				const mainUser = { name, score, username, flagCaptured, flagGenerated, flagLat, flagLong, zoneLat, zoneLong, nearZone, flagDistance, dropFlagCount };
 				this.setState({
 					password: '',
 					confirm: '',
 					error: false
 				});
 				AsyncStorage.setItem('mainUser', JSON.stringify(mainUser));
+			})
+			.then(() => {
 				this.props.navigation.navigate('mainStack');
 			})
 			.catch(error => {
@@ -62,7 +65,15 @@ export default class Login extends Component {
 								/>
 						</View>
 						<View style={styles.loginInputContainer}>
-							<TextInput style={styles.loginInput} placeholder="Password" placeholderTextColor="rgba(255,255,255,0.7)" returnKeyType="go" secureTextEntry ref={input => (this.passwordInput = input)} value={this.state.password} onChangeText={password => this.setState({ password })} />
+							<TextInput style={styles.loginInput} 
+								placeholder="Password" 
+								placeholderTextColor="rgba(255,255,255,0.7)" 
+								returnKeyType="go" 
+								secureTextEntry 
+								ref={input => (this.passwordInput = input)} 
+								value={this.state.password} 
+								onChangeText={password => this.setState({ password })} />
+
 								{this.state.error && <View><Text style={{ textAlign: 'center', color: '#ffffff', position: 'absolute', bottom: -40, left: -20, width:280 }}>Incorrect user details, please try again</Text></View>}
 						</View>
 						<View style={styles.loginBtnContainer}>
