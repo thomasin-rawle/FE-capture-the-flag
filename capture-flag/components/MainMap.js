@@ -41,7 +41,8 @@ export default class MainMap extends Component {
     zoneLong: 0,
     nearZone: false,
     username: "",
-    flagDistance: 0
+    flagDistance: 0,
+    dropFlagCount: 0
   };
   componentWillMount() {
     console.log("mounting");
@@ -178,7 +179,7 @@ export default class MainMap extends Component {
           {
             text: "Capture the flag",
             onPress: () => {
-              // this.incrementScore();
+              this.incrementScore(5)
               api.patchFlagCapture(
                 this.state.username,
                 this.state.flagLong,
@@ -203,7 +204,8 @@ export default class MainMap extends Component {
   };
   dropFlag = () => {
     if (this.state.nearZone) {
-      this.incrementScore();
+      this.incrementScore(10);
+      this.incrementFlagCount();
       this.setState({
         flagCaptured: false,
         flagGenerated: false
@@ -211,11 +213,16 @@ export default class MainMap extends Component {
       this.generateFlag(this.state.username);
     }
   };
-  incrementScore = () => {
-    const scoreUpdate = 5;
+  incrementScore = (scoreUpdate) => {
     api.patchScore(this.state.username, scoreUpdate);
     this.setState({
       score: this.state.score + scoreUpdate
+    });
+  };
+  incrementFlagCount = () => {
+    api.patchFlagCount(this.state.username);
+    this.setState({
+      dropFlagCount: this.state.dropFlagCount+1
     });
   };
   amINear = () => {
@@ -297,7 +304,7 @@ export default class MainMap extends Component {
       </View>
       );
     else {
-      const { name, username, score } = this.state;
+      const { name, username, score, dropFlagCount } = this.state;
       return (
         <View style={{ flex: 1 }}>
           <Drawer
@@ -308,7 +315,7 @@ export default class MainMap extends Component {
               <SideBar
                 logOut={this.logOutUser}
                 getDistanceFromFlag={this.getDistanceFromFlag}
-                score={score} name={name} username={username}
+                score={score} name={name} username={username} dropFlagCount={dropFlagCount}
               />
             }
             side="left"
