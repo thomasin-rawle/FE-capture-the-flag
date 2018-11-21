@@ -58,7 +58,7 @@ export default class Sidebar extends Component {
             <View style={styles.drawerItemStat}><Text style={[styles.drawerStat, {fontWeight: 'bold'}]}>{score}</Text></View>
           </View>
           <View style={styles.drawerStatItem}>
-            <View style={styles.drawerItemIcon}><Image style={{width:30, height:30}} source={flagsCounted}/></View>
+            <View style={styles.drawerItemIcon}><Image style={{width:32, height:32}} source={flagsCounted}/></View>
             <View><Text style={styles.drawerStat}>Flags Captured</Text></View>
             <View style={styles.drawerItemStat}><Text style={[styles.drawerStat, {fontWeight: 'bold'}]}>{score / 5}</Text></View>
           </View>

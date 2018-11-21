@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Text, Image } from 'react-native';
+import { Text, View, Image, TouchableWithoutFeedback } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import styles from '../assets/style/mainStyle'
 import logoLong from '../assets/logo-mainMap.png'
+import profilePic from '../assets/profilePic.png'
 import {
   Header,
   Left,
@@ -16,12 +17,11 @@ class HeaderBar extends Component {
     return (
       <Header style={styles.topBar}>
         <Left style={styles.user}>
-          <FontAwesome
-            onPress={() => this.props.openDrawer()}
-            name="user"
-            size={30}
-            color="white"
-          />
+        <TouchableWithoutFeedback onPress={() => this.props.openDrawer()} >
+        <View style={styles.headerPicContainer}>
+          <Image style={styles.headerBarPic} source={profilePic}/>
+          </View>
+        </TouchableWithoutFeedback>
         </Left>
         <Body style={styles.logo}>
           <Image style={styles.logoLong} source={logoLong}/>

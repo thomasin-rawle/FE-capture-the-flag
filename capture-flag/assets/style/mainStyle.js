@@ -33,27 +33,23 @@ const styles = StyleSheet.create({
     },
     topBar: {
         backgroundColor: '#1CBF8E',
-        paddingTop:30,
-        height:80
+        height:80,
       },
       user: {
-        color: 'white',
         alignItems: 'flex-start',
-        flex: 1,
         paddingLeft:20
       },
       logo: {
         alignItems: 'center',
-        flex: 1
       },
       logoLong: {
         width: 100,
+        height:50,
         resizeMode: 'contain',
     },
       score: {
+        flex:1,
         color: 'white',
-        display: 'flex',
-        flex: 1,
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
         paddingRight:20
@@ -63,15 +59,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         paddingLeft: 5
       },
-      // drawerContainer: {
-      //   display:'flex',
-      //   justifyContent:'center',
-      //   alignItems:'center',
-      //   padding: 20
-      // },
       drawerItem: {
         fontSize:20,
-        color: '#616161'
+        color: '#616161',
+        
       },
       userDrawerContainer: {
         backgroundColor:'#FFFFFF', 
@@ -105,6 +96,18 @@ const styles = StyleSheet.create({
         maxWidth: 70,
         resizeMode: 'contain'
       },
+      headerPicContainer: {
+        width:50,
+        height:50,
+        borderRadius:100,
+        overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      headerBarPic: {
+        maxWidth: 50,
+        resizeMode: 'contain'
+      },
       namesContainer: {
         marginTop: 20,
         paddingLeft:5
@@ -126,17 +129,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'flex-start',
-        marginVertical: 15
+        marginVertical: 15,
       },
       drawerStat: {
         color: '#616161',
-        fontSize:24
+        fontSize:22
       },
       drawerItemIcon: {
         alignItems: 'center',
+        justifyContent:'flex-end',
         width: 40,
+        height:40,
         marginRight: 10,
-        
       },
       drawerItemStat: {
         marginLeft: 10,
