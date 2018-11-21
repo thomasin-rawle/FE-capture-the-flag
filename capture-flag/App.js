@@ -4,7 +4,8 @@ import {
   View,
   Animated,
   Easing,
-  AsyncStorage, 
+  AsyncStorage,
+  ActivityIndicator,
   Text
 } from 'react-native';
 import { createStackNavigator, createDrawerNavigator, createSwitchNavigator } from 'react-navigation'
@@ -51,7 +52,7 @@ class App extends Component {
     
     return (
      <View>
-       <Text>...Loading things...</Text>
+      <ActivityIndicator size="large" color="#fff" />
      </View>
     );
   }

@@ -271,9 +271,9 @@ export default class MainMap extends Component {
 
     if (this.state.loading)
       return (
-        <View style={styles.loading}>
-          <Text>Loading...</Text>
-        </View>
+        <View style={styles.loadingScreen}>
+        <ActivityIndicator size='large' color="#ffffff" />
+      </View>
       );
     else {
       const { lat, long } = this.state;
@@ -343,7 +343,7 @@ export default class MainMap extends Component {
                   underlayColor={"#ececec"}
                   style={styles.recenterBtn}
                 >
-                  <FontAwesome name="bullseye" size={40} color="#00bbff" />
+                  <FontAwesome name="bullseye" size={40} style={styles.recenterBtnIcon} />
                 </TouchableHighlight>
               </View>
             </Drawer>
@@ -353,28 +353,4 @@ export default class MainMap extends Component {
     }
   }
 }
-const styles = StyleSheet.create({
-  loading: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: Constants.statusBarHeight,
-    backgroundColor: "#ecf0f1"
-  },
-  recenterBtn: {
-    position: "absolute",
-    bottom: 40,
-    right: 20,
-    backgroundColor: "white",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 150,
-    width: 60,
-    height: 60,
-    shadowColor: "#333",
-    shadowOpacity: 0.4,
-    shadowOffset: { width: 4, height: 4 },
-    elevation: 5
-  }
-});
+
