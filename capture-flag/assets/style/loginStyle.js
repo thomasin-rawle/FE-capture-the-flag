@@ -59,29 +59,26 @@ const styles = StyleSheet.create({
         left: 20,
         zIndex: 100
     },
+    strengthIndicator: {
+        position: 'absolute',
+        right:10,
+        backgroundColor: '#fff',
+        borderRadius:100,
+        width:30,
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center'
+        
+    },
     inputWeak: {
-        backgroundColor: 'red',
-        width: 240,
-        height: 25,
-        textAlign: "center",
-        fontSize: 20,
-        color: 'white'
+        color: 'red',
     },
     inputMedium: {
-        backgroundColor: 'yellow',
-        width: 240,
-        height: 25,
-        textAlign: "center",
-        fontSize: 20,
-        color: 'black'
+        color: 'orange',
+       
     },
     inputGood: {
-        backgroundColor: 'green',
-        width: 240,
-        height: 25,
-        textAlign: "center",
-        fontSize: 20,
-        color: 'white'
+        color: 'green',
     },
 })
 

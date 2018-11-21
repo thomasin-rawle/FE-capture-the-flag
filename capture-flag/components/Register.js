@@ -33,9 +33,9 @@ export default class Register extends Component {
 	};
 
 	onRegisterPress = user => {
-		const { name, username, password, confirm } = user;
+    const {name, username, password, confirm } = user;
 		api
-			.addUser({ name, username, confirm, password: password.value })
+			.addUser({name, username, password, confirm})
 			.then(user => {
 				const { name, score, username, flagCaptured, flagGenerated, flagLatitude, flagLongitude } = user;
 				const mainUser = { name, score, username, flagCaptured, flagGenerated, flagLatitude, flagLongitude };
@@ -79,9 +79,12 @@ export default class Register extends Component {
   
 	passwordStyle = password => {
 		const score = this.passwordStrength(password);
-		if (!score) return styles.input;
-		return score < 15 ? styles.inputWeak : score < 30 ? styles.inputMedium : styles.inputGood;
-	};
+    if (score) return score < 15 ? styles.inputWeak : score < 30 ? styles.inputMedium : styles.inputGood;
+  };
+  passwordIcon = password => {
+    const score = this.passwordStrength(password);
+    if (score) return score < 15 ? 'times-circle' : score < 30 ? 'minus-circle' : 'check-circle';
+  }
 
   render() {
     return (
@@ -130,10 +133,10 @@ export default class Register extends Component {
             returnKeyType="next"
             secureTextEntry
           />
-          </View>
-          <View>
-            {this.state.password.length > 0 && 
-            <Text style={this.passwordStyle(this.state.password)}>Password strength</Text>}
+              {this.state.password.length > 0 && 
+            <View style={styles.strengthIndicator}>
+              <FontAwesome size={26} name={this.passwordIcon(this.state.password)} style={this.passwordStyle(this.state.password)}/>
+            </View>}
           </View>
           <View style={styles.loginInputContainer}>
           <TextInput style={styles.loginInput}

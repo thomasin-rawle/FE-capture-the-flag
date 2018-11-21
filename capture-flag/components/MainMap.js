@@ -366,7 +366,7 @@ export default class MainMap extends Component {
                   underlayColor={"#ececec"}
                   style={styles.recenterBtn}
                 >
-                  <FontAwesome name="bullseye" size={40} style={styles.recenterBtnIcon} />
+                  <FontAwesome name="crosshairs" size={40} style={styles.recenterBtnIcon} />
                 </TouchableHighlight>
               </View>
             </Drawer>
