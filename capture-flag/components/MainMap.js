@@ -55,15 +55,18 @@ export default class MainMap extends Component {
             "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
         });
       } else {
-        this._getLocationAsync()
-          .then(() => AsyncStorage.getItem("mainUser"))
-          .then(userObj => {
-            const newMainObj = JSON.parse(userObj);
-            return api
-              .getUser(newMainObj.username)
-              .then(user => this.setState({ ...user }));
-          });
-      }
+        this._getInitialLocation()
+        // this._getLocationAsync()
+        //   .then(() => 
+        AsyncStorage.getItem("mainUser")
+        .then(userObj => {
+          const newMainObj = JSON.parse(userObj);
+          return newMainObj})
+        .then(user => {
+          return api.getUser(user.username)})
+        .then(user => this.setState({ ...user }))
+        .then(() => this._beginWatchingLocation());
+        }  
     });
   }
   componentDidUpdate(prevProps, prevState) {
@@ -76,7 +79,22 @@ export default class MainMap extends Component {
       }
     }
   }
-  _getLocationAsync = async () => {
+  _getInitialLocation = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ 
+      lat: location.coords.latitude,
+      long: location.coords.longitude,
+      loading: false
+     });
+  }
+  _beginWatchingLocation = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
       this.setState({
@@ -272,7 +290,6 @@ export default class MainMap extends Component {
 
   render() {
     console.log(this.state.flagLat, "flaglat inside render");
-
     if (this.state.loading)
       return (
         <View style={styles.loadingScreen}>
@@ -340,6 +357,7 @@ export default class MainMap extends Component {
                       }}
                       radius={20}
                       fillColor="rgba(0, 255, 0, 0.3)"
+                      strokeColor="rgba(0, 255, 0, 0.3)"
                     />
                   )}
                 </MapView>
