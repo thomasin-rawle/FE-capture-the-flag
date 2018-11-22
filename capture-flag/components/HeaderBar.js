@@ -1,65 +1,36 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, Image, TouchableWithoutFeedback } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import styles from '../assets/style/mainStyle'
+import logoLong from '../assets/logo-mainMap.png'
+import profilePic from '../assets/profilePic.png'
 import {
   Header,
   Left,
   Right,
-  Body,
-  Title,
+  Body
 } from 'native-base';
 
 class HeaderBar extends Component {
   render() {
     return (
-      <Header style={styles.topBar}>
+      <View style={styles.topBar} >
         <Left style={styles.user}>
-          <FontAwesome
-            onPress={() => this.props.openDrawer()}
-            name="user"
-            size={30}
-            color="white"
-          />
+        <TouchableWithoutFeedback onPress={() => this.props.openUserDrawer()} >
+        <View style={styles.headerPicContainer}>
+          <Image style={styles.headerBarPic} source={profilePic}/>
+          </View>
+        </TouchableWithoutFeedback>
         </Left>
-        <Body>
-          <Title style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>
-            FlagLand
-          </Title>
+        <Body style={styles.logo}>
+          <Image style={styles.logoLong} source={logoLong}/>
         </Body>
         <Right style={styles.score}>
-          <FontAwesome name="trophy" size={30} color="white" />
+				  <FontAwesome onPress={() => this.props.openScoreDrawer()} name="trophy" size={30} color="white" />
           <Text style={styles.scoreNumber}>{this.props.score}</Text>
         </Right>
-      </Header>
+      </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  topBar: {
-    backgroundColor: '#00bbff',
-    justifyContent: 'center'
-  },
-  user: {
-    color: 'white',
-    alignItems: 'center'
-  },
-  logo: {
-    flex: 1,
-    alignItems: 'center'
-  },
-  score: {
-    color: 'white',
-    display: 'flex',
-    flex: 1,
-    alignItems: 'flex-end',
-    justifyContent: 'center'
-  },
-  scoreNumber: {
-    color: 'white',
-    fontSize: 20,
-    paddingLeft: 5
-  }
-});
-
 export default HeaderBar;

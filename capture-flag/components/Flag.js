@@ -1,22 +1,22 @@
 import React from 'react';
-import { Button, View } from 'react-native';
+import { Button, View, Image } from 'react-native';
 import { MapView } from 'expo';
 import greenFlag from '../assets/green-flag.png';
 import redFlag from '../assets/red-flag.png';
 
-const Flag = props => {
-	const flag = props.nearFlag ? greenFlag : redFlag;
+const Flag = ({nearFlag, captureFlag, flagLat, flagLong}) => {
+	const flag = nearFlag ? greenFlag : redFlag;
 	return (
 		<View>
 			<MapView.Marker
-				image={flag}
-				onPress={props.captureFlag}
+				onPress={captureFlag}
+				anchor={{x: 0.2, y: 0.8}}
 				coordinate={{
-					latitude: props.flagLat,
-					longitude: props.flagLong
-				}}
-				title={'random Flag'}
-			/>
+					latitude: flagLat,
+					longitude: flagLong
+				}}>
+			<Image source={flag} style={{width:50, height:55}} />
+			</MapView.Marker>
 		</View>
 	);
 };
