@@ -1,28 +1,17 @@
-import React, { Component } from "react";
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableHighlight,
-  TouchableOpacity,
-  Image,
-  KeyboardAvoidingView,
-  AsyncStorage
-} from "react-native";
+import React, { Component } from 'react';
+import { AppRegistry, StyleSheet, Text, View, TextInput, TouchableHighlight, TouchableOpacity, Image, KeyboardAvoidingView, AsyncStorage } from 'react-native';
 
-import * as api from "../api"
-import styles from '../assets/style/loginStyle'
+import * as api from '../api';
+import styles from '../assets/style/loginStyle';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default class Register extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-      error: false,
-      password: '',
-      confirm: '',
+			error: '',
+			password: '',
+			confirm: ''
 		};
 	}
 
@@ -34,27 +23,26 @@ export default class Register extends Component {
 	};
 
 	onRegisterPress = user => {
-    const {name, username, password, confirm } = user;
+		const { name, username, password, confirm } = user;
 		api
-			.addUser({name, username, password, confirm})
+			.addUser({ name, username, password, confirm })
 			.then(user => {
 				const { name, score, username, flagCaptured, flagGenerated, flagLatitude, flagLongitude } = user;
 				const mainUser = { name, score, username, flagCaptured, flagGenerated, flagLatitude, flagLongitude };
 				this.setState({
 					password: '',
 					confirm: '',
-					error: false
+					error: ''
 				});
 				AsyncStorage.setItem('mainUser', JSON.stringify(mainUser));
-      })
-      .then(() => {
-        this.props.navigation.navigate('mainStack');
-      })
+			})
+			.then(() => this.props.navigation.navigate('mainStack'))
 			.catch(error => {
+				console.log(error.response.data.message)
 				this.setState({
-          password: '',
+					password: '',
 					confirm: '',
-					error: true
+					error: error.response.data.message
 				});
 			});
 	};
@@ -80,92 +68,86 @@ export default class Register extends Component {
 		}
 		score += (count - 1) * 10;
 		return Math.round(score);
-  };
-  
+	};
+
 	passwordStyle = password => {
 		const score = this.passwordStrength(password);
-    if (score) return score < 15 ? styles.inputWeak : score < 30 ? styles.inputMedium : styles.inputGood;
-  };
-  passwordIcon = password => {
-    const score = this.passwordStrength(password);
-    if (score) return score < 15 ? 'times-circle' : score < 30 ? 'minus-circle' : 'check-circle';
-  }
+		if (score) return score < 15 ? styles.inputWeak : score < 30 ? styles.inputMedium : styles.inputGood;
+	};
+	passwordIcon = password => {
+		const score = this.passwordStrength(password);
+		if (score) return score < 15 ? 'times-circle' : score < 30 ? 'minus-circle' : 'check-circle';
+	};
 
-  render() {
-    return (
-      <KeyboardAvoidingView style={styles.loginContainer} behavior="padding" enabled>
-      <TouchableOpacity style={styles.backBtn} onPress={() => this.props.navigation.goBack()}>
-         <FontAwesome name="arrow-circle-left" size={40} color="#fff" />
-      </TouchableOpacity>
-      <View style={styles.logoLoginContainer}>
-						<Image style={styles.logoLogin} source={require('../assets/logo-login.png')} />
-					</View>
-        
-          <View style={styles.loginInputContainer}>
-            <TextInput style={styles.loginInput}
-              value={this.state.name}
-              onChangeText={name => this.setState({ name })}
-              placeholder="Name"
-              placeholderTextColor="rgba(255,255,255,0.7)"
-              returnKeyType="next"
-              onSubmitEditing={() => this.emailInput.focus()}
-            />
-          </View>
-          <View style={styles.loginInputContainer}>
-            <TextInput style={styles.loginInput}
-            value={this.state.username}
-            onChangeText={username => this.setState({ username })}
-            placeholderTextColor="rgba(255,255,255,0.7)"
-            returnKeyType="next"
-            ref={input => (this.emailInput = input)}
-            onSubmitEditing={() => this.passwordCInput.focus()}
-            keyboardType="default"
-            autoCapitalize="none"
-            autoCorrect={false}
-            placeholder="Username"
-          />
-          </View>
-          <View style={styles.loginInputContainer}>
+	render() {
+		return (
+			<KeyboardAvoidingView style={styles.loginContainer} behavior="padding" enabled>
+				<TouchableOpacity style={styles.backBtn} onPress={() => this.props.navigation.goBack()}>
+					<FontAwesome name="arrow-circle-left" size={40} color="#fff" />
+				</TouchableOpacity>
+				<View style={styles.logoLoginContainer}>
+					<Image style={styles.logoLogin} source={require('../assets/logo-login.png')} />
+				</View>
 
-          <TextInput style={styles.loginInput}
-            value={this.state.password}
-            onChangeText={password => this.setState({ password })}
-            placeholder="Password"
-            secureTextEntry={true}
-            placeholderTextColor="rgba(255,255,255,0.7)"
-            ref={input => (this.passwordCInput = input)}
-            onSubmitEditing={() => this.passwordInput.focus()}
-            returnKeyType="next"
-            secureTextEntry
-          />
-              {this.state.password.length > 0 && 
-            <View style={styles.strengthIndicator}>
-              <FontAwesome size={26} name={this.passwordIcon(this.state.password)} style={this.passwordStyle(this.state.password)}/>
-            </View>}
-          </View>
-          <View style={styles.loginInputContainer}>
-          <TextInput style={styles.loginInput}
-            onChangeText={confirm => this.setState({ confirm })}
-            placeholder="Confirm Password"
-            secureTextEntry={true}
-            placeholderTextColor="rgba(255,255,255,0.7)"
-            returnKeyType="go"
-            secureTextEntry
-          />
-          {this.state.error && 
-        <View>
-          <Text style={{ textAlign: 'center', color: '#ffffff', position: 'absolute', bottom: -40, left: -20, width:280 }}>
-        Please fill in all the fields
-          </Text></View>}
-          </View>
-          <View style={styles.loginBtnContainer}>
-          <TouchableHighlight style={styles.loginBtn} onPress={() => this.onRegisterPress(this.state)}>
-            <Text style={styles.loginBtnText}>Register</Text>
-          </TouchableHighlight>
-        </View>
-        </KeyboardAvoidingView>
-    );
-  }
+				<View style={styles.loginInputContainer}>
+					<TextInput style={styles.loginInput} value={this.state.name} onChangeText={name => this.setState({ name })} placeholder="Name" placeholderTextColor="rgba(255,255,255,0.7)" returnKeyType="next" onSubmitEditing={() => this.emailInput.focus()} />
+				</View>
+				<View style={styles.loginInputContainer}>
+					<TextInput
+						style={styles.loginInput}
+						value={this.state.username}
+						onChangeText={username => this.setState({ username })}
+						placeholderTextColor="rgba(255,255,255,0.7)"
+						returnKeyType="next"
+						ref={input => (this.emailInput = input)}
+						onSubmitEditing={() => this.passwordCInput.focus()}
+						keyboardType="default"
+						autoCapitalize="none"
+						autoCorrect={false}
+						placeholder="Username"
+					/>
+				</View>
+				<View style={styles.loginInputContainer}>
+					<TextInput
+						style={styles.loginInput}
+						value={this.state.password}
+						onChangeText={password => this.setState({ password })}
+						placeholder="Password"
+						secureTextEntry={true}
+						placeholderTextColor="rgba(255,255,255,0.7)"
+						ref={input => (this.passwordCInput = input)}
+						returnKeyType="next"
+						secureTextEntry
+					/>
+					{this.state.password.length > 0 && (
+						<View style={styles.strengthIndicator}>
+							<FontAwesome size={26} name={this.passwordIcon(this.state.password)} style={this.passwordStyle(this.state.password)} />
+						</View>
+					)}
+				</View>
+				<View style={styles.loginInputContainer}>
+					<TextInput style={styles.loginInput} 
+					onChangeText={confirm => this.setState({ confirm })} 
+					placeholder="Confirm Password" 
+					value={this.state.confirm}
+					secureTextEntry={true} 
+					placeholderTextColor="rgba(255,255,255,0.7)" 
+					returnKeyType="go" 
+					secureTextEntry />
+					{this.state.error.length > 0 && (
+						<View>
+							<Text style={{ textAlign: 'center', color: '#ffffff', position: 'absolute', bottom: -40, left: -20, width: 280 }}>{this.state.error}</Text>
+						</View>
+					)}
+				</View>
+				<View style={styles.loginBtnContainer}>
+					<TouchableHighlight style={styles.loginBtn} onPress={() => this.onRegisterPress(this.state)}>
+						<Text style={styles.loginBtnText}>Register</Text>
+					</TouchableHighlight>
+				</View>
+			</KeyboardAvoidingView>
+		);
+	}
 }
 
-AppRegistry.registerComponent("Register", () => Register);
+AppRegistry.registerComponent('Register', () => Register);
