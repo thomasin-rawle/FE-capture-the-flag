@@ -9,7 +9,7 @@ export default class Register extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			error: false,
+			error: '',
 			password: '',
 			confirm: ''
 		};
@@ -32,16 +32,17 @@ export default class Register extends Component {
 				this.setState({
 					password: '',
 					confirm: '',
-					error: false
+					error: ''
 				});
 				AsyncStorage.setItem('mainUser', JSON.stringify(mainUser));
 			})
 			.then(() => this.props.navigation.navigate('mainStack'))
 			.catch(error => {
+				console.log(error.response.data.message)
 				this.setState({
 					password: '',
 					confirm: '',
-					error: true
+					error: error.response.data.message
 				});
 			});
 	};
@@ -115,7 +116,6 @@ export default class Register extends Component {
 						secureTextEntry={true}
 						placeholderTextColor="rgba(255,255,255,0.7)"
 						ref={input => (this.passwordCInput = input)}
-						onSubmitEditing={() => this.passwordInput.focus()}
 						returnKeyType="next"
 						secureTextEntry
 					/>
@@ -126,10 +126,17 @@ export default class Register extends Component {
 					)}
 				</View>
 				<View style={styles.loginInputContainer}>
-					<TextInput style={styles.loginInput} onChangeText={confirm => this.setState({ confirm })} placeholder="Confirm Password" secureTextEntry={true} placeholderTextColor="rgba(255,255,255,0.7)" returnKeyType="go" secureTextEntry />
-					{this.state.error && (
+					<TextInput style={styles.loginInput} 
+					onChangeText={confirm => this.setState({ confirm })} 
+					placeholder="Confirm Password" 
+					value={this.state.confirm}
+					secureTextEntry={true} 
+					placeholderTextColor="rgba(255,255,255,0.7)" 
+					returnKeyType="go" 
+					secureTextEntry />
+					{this.state.error.length > 0 && (
 						<View>
-							<Text style={{ textAlign: 'center', color: '#ffffff', position: 'absolute', bottom: -40, left: -20, width: 280 }}>Please fill in all the fields</Text>
+							<Text style={{ textAlign: 'center', color: '#ffffff', position: 'absolute', bottom: -40, left: -20, width: 280 }}>{this.state.error}</Text>
 						</View>
 					)}
 				</View>
