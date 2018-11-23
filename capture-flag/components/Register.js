@@ -21,7 +21,8 @@ export default class Register extends Component {
 		super(props);
 		this.state = {
       error: false,
-      password: ''
+      password: '',
+      confirm: '',
 		};
 	}
 
@@ -45,10 +46,14 @@ export default class Register extends Component {
 					error: false
 				});
 				AsyncStorage.setItem('mainUser', JSON.stringify(mainUser));
-				this.props.navigation.navigate('mainStack');
-			})
+      })
+      .then(() => {
+        this.props.navigation.navigate('mainStack');
+      })
 			.catch(error => {
 				this.setState({
+          password: '',
+					confirm: '',
 					error: true
 				});
 			});

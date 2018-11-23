@@ -20,7 +20,6 @@ export default class Login extends Component {
 	};
 
 	loginUser = user => {
-		console.log(user)
 		api
 			.getUserAfterLogin(user)
 			.then(user => {
@@ -37,9 +36,9 @@ export default class Login extends Component {
 				this.props.navigation.navigate('mainStack');
 			})
 			.catch(error => {
-				console.log(error);
 				this.setState({
-					error: true
+					error: true,
+					password: '',
 				});
 			});
 	};
